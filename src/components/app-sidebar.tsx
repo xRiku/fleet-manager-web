@@ -1,4 +1,4 @@
-import { Calendar, Home, Inbox, Search, Settings } from "lucide-react";
+import { Home, Search, Settings } from "lucide-react";
 
 import {
   Sidebar,
@@ -10,7 +10,8 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import { Car } from "@phosphor-icons/react/dist/ssr";
+import { Car, Garage } from "@phosphor-icons/react/dist/ssr";
+import Image from "next/image";
 
 // Menu items.
 const items = [
@@ -21,13 +22,13 @@ const items = [
   },
   {
     title: "Veículos",
-    url: "#",
+    url: "vehicles",
     icon: Car,
   },
   {
-    title: "Calendar",
-    url: "#",
-    icon: Calendar,
+    title: "Filiais",
+    url: "branches",
+    icon: Garage,
   },
   {
     title: "Search",
@@ -46,7 +47,10 @@ export function AppSidebar() {
     <Sidebar>
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel>Fleet Manager</SidebarGroupLabel>
+          <SidebarGroupLabel className="gap-2 mb-2">
+            <Image width={32} height={32} src="/logo.svg" alt="logo image" />
+            <p className="text-xl font-bold text-primary">Fleet Manager</p>
+          </SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {items.map((item) => (

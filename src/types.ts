@@ -11,3 +11,14 @@ export type Trip = {
   authorizedAt?: string;
   finishedBy?: string;
 };
+
+export enum Status {
+  APPROVED = "approved",
+  DENIED = "denied",
+  IN_ANALYSIS = "inAnalysis",
+}
+
+export enum Progress {
+  IN_PROGRESS = "inProgress",
+  DONE = "DONE",
+}
