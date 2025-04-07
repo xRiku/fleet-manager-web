@@ -4,7 +4,7 @@ import { useModalStore } from "@/stores/modal-store";
 import { Button } from "../ui/button";
 import { Plus } from "@phosphor-icons/react";
 
-export default function BranchesButton() {
+export default function BranchesModalTriggerButton() {
   const { toggleIsBranchModalOpened } = useModalStore();
 
   return (
