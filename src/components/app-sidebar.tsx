@@ -10,6 +10,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
+import { Car } from "@phosphor-icons/react/dist/ssr";
 
 // Menu items.
 const items = [
@@ -19,9 +20,9 @@ const items = [
     icon: Home,
   },
   {
-    title: "Inbox",
+    title: "Veículos",
     url: "#",
-    icon: Inbox,
+    icon: Car,
   },
   {
     title: "Calendar",
