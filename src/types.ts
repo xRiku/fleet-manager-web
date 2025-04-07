@@ -12,6 +12,11 @@ export type Trip = {
   finishedBy?: string;
 };
 
+export type Branch = {
+  id: string;
+  name: string;
+};
+
 export enum Status {
   APPROVED = "approved",
   DENIED = "denied",
