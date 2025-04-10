@@ -12,6 +12,18 @@ export type Trip = {
   finishedBy?: string;
 };
 
+export type Vehicle = {
+  id: string;
+  plate: string;
+  odometer: number;
+  branch: string;
+  color: string;
+  model: string;
+  year: string;
+  manufacturer: string;
+  availability: string;
+}
+
 export type Branch = {
   id: string;
   name: string;
@@ -26,4 +38,9 @@ export enum Status {
 export enum Progress {
   IN_PROGRESS = "inProgress",
   DONE = "DONE",
+}
+
+export enum Availability {
+  AVAILABLE = "available",
+  UNAVAILABLE = "unavailable",
 }

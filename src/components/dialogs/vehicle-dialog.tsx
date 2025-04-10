@@ -25,7 +25,11 @@ import {
 const vehicleSchema = z.object({
   plate: z.string(),
   odometer: z.coerce.number(),
+  color: z.string(),
   branch: z.string(),
+  model: z.string(),
+  year: z.number(),
+  manufacturer: z.string(),
 });
 
 type VehicleSchema = z.infer<typeof vehicleSchema>;
@@ -38,6 +42,10 @@ export function VehicleDialog() {
     defaultValues: {
       branch: "",
       plate: "",
+      model: "",
+      color: "",
+      year: 0,
+      manufacturer: "",
       odometer: 0,
     },
   });
@@ -75,12 +83,68 @@ export function VehicleDialog() {
           >
             <FormField
               control={form.control}
+              name="manufacturer"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Fabricante</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Fabricante" {...field} />
+                  </FormControl>
+
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="model"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Modelo</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Modelo" {...field} />
+                  </FormControl>
+
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="color"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Cor</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Cor" {...field} />
+                  </FormControl>
+
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
               name="plate"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Placa</FormLabel>
                   <FormControl>
                     <Input placeholder="XXXXXXX" {...field} />
+                  </FormControl>
+
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="year"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Ano</FormLabel>
+                  <FormControl>
+                    <Input inputMode="numeric" placeholder="2023" {...field} />
                   </FormControl>
 
                   <FormMessage />

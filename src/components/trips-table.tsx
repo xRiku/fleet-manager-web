@@ -48,14 +48,14 @@ export default function TripsTable({ trips }: { trips: Trip[] }) {
         {trips.map((trip) => (
           <TableRow key={trip.id}>
             <TableCell className="font-medium">{trip.driver}</TableCell>
-            <TableCell className="w-24">
+            <TableCell className="w-24 font-medium">
               <Badge variant={mapVariant(trip.status)}>
                 {translateStatus(trip.status)}
               </Badge>
             </TableCell>
-            <TableCell>{trip.origin}</TableCell>
-            <TableCell>{trip.destiny}</TableCell>
-            <TableCell className="text-right">{trip.progress}</TableCell>
+            <TableCell className="font-medium">{trip.origin}</TableCell>
+            <TableCell className="font-medium">{trip.destiny}</TableCell>
+            <TableCell className="text-right font-medium">{trip.progress}</TableCell>
           </TableRow>
         ))}
       </TableBody>
