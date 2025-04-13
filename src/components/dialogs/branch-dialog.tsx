@@ -12,15 +12,21 @@ import { Label } from "@/components/ui/label";
 import { useModalStore } from "@/stores/modal-store";
 import { Button } from "../ui/button";
 import { branches } from "@/db/branches";
+import { useState } from "react";
+import { createBranch } from "@/actions/actions";
 
 export function BranchDialog() {
   const { isBranchModalOpened, toggleIsBranchModalOpened } = useModalStore();
+  const [name, setName] = useState("");
+  const [error, setError] = useState("");
 
-  const handleClick = () => {
-    branches.push({
-      id: branches.length + 1 + "",
-      name: "Caetité" + branches.length + 1,
-    });
+  const handleClick = async () => {
+    try {
+      await createBranch(name);
+    } catch (error) {
+      console.log(error);
+    }
+
     toggleIsBranchModalOpened();
   };
 
@@ -35,7 +41,13 @@ export function BranchDialog() {
             <Label htmlFor="name" className="text-right">
               Nome
             </Label>
-            <Input id="name" placeholder="Caetité" className="col-span-3" />
+            <Input
+              id="name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder="Caetité"
+              className="col-span-3"
+            />
           </div>
         </div>
         <DialogFooter>
