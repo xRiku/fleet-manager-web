@@ -31,8 +31,8 @@ export default function VehiclesTable({ vehicles }: { vehicles: Vehicle[] }) {
     <Table>
       <TableHeader>
         <TableRow>
+          <TableHead>Fabricante</TableHead>
           <TableHead>Modelo</TableHead>
-          <TableHead>Montadora</TableHead>
           <TableHead>Cor</TableHead>
           <TableHead className="w-24">Disponibilidade</TableHead>
           <TableHead>Placa</TableHead>
@@ -44,8 +44,8 @@ export default function VehiclesTable({ vehicles }: { vehicles: Vehicle[] }) {
       <TableBody>
         {vehicles.map((vehicle) => (
           <TableRow key={vehicle.id}>
-            <TableCell className="font-medium">{vehicle.model}</TableCell>
             <TableCell className="font-medium">{vehicle.brand}</TableCell>
+            <TableCell className="font-medium">{vehicle.model}</TableCell>
             <TableCell className="font-medium">{vehicle.color}</TableCell>
             <TableCell className="w-24">
               <Badge variant={mapVariant(Availability.AVAILABLE)}>

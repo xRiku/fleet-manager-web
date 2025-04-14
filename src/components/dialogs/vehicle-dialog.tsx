@@ -30,15 +30,17 @@ import {
 } from "../ui/select";
 import { Branch } from "@/types";
 import { use } from "react";
+import { createVehicle } from "@/actions/actions";
+import { capitalize } from "@/lib/utils";
 
 const vehicleSchema = z.object({
-  plate: z.string(),
-  odometer: z.coerce.number(),
-  color: z.string(),
-  branch: z.string(),
-  model: z.string(),
-  year: z.coerce.number(),
-  manufacturer: z.string(),
+  plate: z.string().trim(),
+  odometer: z.coerce.number().positive(),
+  color: z.string().trim(),
+  branch: z.string().trim(),
+  model: z.string().trim(),
+  brand: z.string().trim(),
+  year: z.coerce.number().positive(),
 });
 
 type VehicleSchema = z.infer<typeof vehicleSchema>;
@@ -54,22 +56,32 @@ export function VehicleDialog({
   const form = useForm<VehicleSchema>({
     resolver: zodResolver(vehicleSchema),
     defaultValues: {
-      branch: "",
       plate: "",
       model: "",
       color: "",
       year: 0,
-      manufacturer: "",
+      brand: "",
       odometer: 0,
+      branch: branches[0].id,
     },
   });
 
   // const { handleSubmit } = methods;
 
   const onSubmit = (data: VehicleSchema) => {
-    console.log(data);
-
-    toggleIsVehicleModalOpened();
+    try {
+      createVehicle({
+        ...data,
+        color: capitalize(data.color),
+        brand: capitalize(data.brand),
+        model: capitalize(data.model),
+        branchId: data.branch,
+      });
+      toggleIsVehicleModalOpened();
+      form.reset();
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -89,7 +101,7 @@ export function VehicleDialog({
           >
             <FormField
               control={form.control}
-              name="manufacturer"
+              name="brand"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Fabricante</FormLabel>
@@ -176,10 +188,7 @@ export function VehicleDialog({
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Filial</FormLabel>
-                  <Select
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
-                  >
+                  <Select onValueChange={field.onChange} value={field.value}>
                     <FormControl>
                       <SelectTrigger>
                         <SelectValue placeholder="Caetité" />
@@ -188,7 +197,7 @@ export function VehicleDialog({
                     <SelectContent>
                       {branches.map((branch) => {
                         return (
-                          <SelectItem key={branch.name} value={branch.name}>
+                          <SelectItem key={branch.id} value={branch.id}>
                             {branch.name}
                           </SelectItem>
                         );
@@ -199,19 +208,6 @@ export function VehicleDialog({
                 </FormItem>
               )}
             />
-            {/* <FormField
-              control={form.control}
-              name="branch"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Filial</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Caetité" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            /> */}
           </form>
         </Form>
         <DialogFooter>
