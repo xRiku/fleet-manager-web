@@ -1,4 +1,6 @@
-import { Home, Search, Settings } from "lucide-react";
+"use client";
+
+import { Home, Settings } from "lucide-react";
 
 import {
   Sidebar,
@@ -12,33 +14,30 @@ import {
 } from "@/components/ui/sidebar";
 import { Car, Garage, Signpost } from "@phosphor-icons/react/dist/ssr";
 import Image from "next/image";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 // Menu items.
 const items = [
   {
     title: "Home",
-    url: "#",
+    url: "/",
     icon: Home,
   },
   {
     title: "Veículos",
-    url: "vehicles",
+    url: "/vehicles",
     icon: Car,
   },
   {
     title: "Viagens",
-    url: "trips",
+    url: "/trips",
     icon: Signpost,
   },
   {
     title: "Filiais",
-    url: "branches",
+    url: "/branches",
     icon: Garage,
-  },
-  {
-    title: "Search",
-    url: "#",
-    icon: Search,
   },
   {
     title: "Settings",
@@ -48,6 +47,8 @@ const items = [
 ];
 
 export function AppSidebar() {
+  const pathname = usePathname();
+
   return (
     <Sidebar>
       <SidebarContent>
@@ -59,12 +60,19 @@ export function AppSidebar() {
           <SidebarGroupContent>
             <SidebarMenu>
               {items.map((item) => (
-                <SidebarMenuItem key={item.title}>
+                <SidebarMenuItem
+                  key={item.title}
+                  className={`${
+                    pathname === item.url
+                      ? "bg-accent font-medium text-accent-foreground rounded-md"
+                      : "font-normal text-foreground"
+                  }`}
+                >
                   <SidebarMenuButton asChild>
-                    <a href={item.url}>
+                    <Link href={item.url}>
                       <item.icon />
                       <span>{item.title}</span>
-                    </a>
+                    </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}

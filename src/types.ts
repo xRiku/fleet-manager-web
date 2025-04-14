@@ -1,6 +1,6 @@
 export type Trip = {
   id: string;
-  driver?: string;
+  driver: User;
   vehicle: Vehicle;
   origin: Branch;
   destiny: Branch;
@@ -29,6 +29,12 @@ export type Branch = {
   name: string;
 };
 
+export type User = {
+  id: string;
+  name: string;
+  role: Role;
+};
+
 export enum Status {
   APPROVED = "approved",
   DENIED = "denied",
@@ -43,4 +49,9 @@ export enum Progress {
 export enum Availability {
   AVAILABLE = "available",
   UNAVAILABLE = "unavailable",
+}
+
+export enum Role {
+  ADMIN = "admin",
+  USER = "user",
 }

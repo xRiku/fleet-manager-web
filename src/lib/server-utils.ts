@@ -21,6 +21,7 @@ export const getTrips = async () => {
       origin: true,
       destiny: true,
       vehicle: true,
+      driver: true,
     },
   });
 };

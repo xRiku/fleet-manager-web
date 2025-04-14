@@ -1,8 +1,9 @@
-import { branches, trips, vehicles } from "@/db/schema";
+import { branches, trips, users, vehicles } from "@/db/schema";
 import { v4 as uuidv4 } from "uuid";
 import { drizzle } from "drizzle-orm/libsql";
 import { createClient } from "@libsql/client";
 import "dotenv/config";
+import { Role } from "@/types";
 
 if (!process.env.DB_FILE_NAME) {
   throw new Error("Environment variable DB_FILE_NAME is not defined.");
@@ -53,13 +54,28 @@ async function seed() {
     branchId: insertedBranches[0].id, // Assign to the first branch
   });
 
+  await db.insert(users).values({
+    id: uuidv4(),
+    name: "Philipe Marques",
+    role: Role.ADMIN,
+  });
+
+  await db.insert(users).values({
+    id: uuidv4(),
+    name: "João Marques",
+    role: Role.USER,
+  });
+
   const insertedVehicles = await db.select().from(vehicles);
+
+  const insertedUsers = await db.select().from(users);
 
   await db.insert(trips).values({
     id: uuidv4(),
     vehicleId: insertedVehicles[0].id,
     originId: insertedBranches[1].id,
     destinyId: insertedBranches[0].id,
+    driverId: insertedUsers[0].id,
   });
 
   console.log("✅ Done seeding.");

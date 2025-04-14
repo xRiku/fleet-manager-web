@@ -52,7 +52,7 @@ export default function TripsTable({ trips }: { trips: Trip[] }) {
                 {translateStatus(trip.status)}
               </Badge>
             </TableCell>
-            <TableCell className="font-medium">{trip.driver}</TableCell>
+            <TableCell className="font-medium">{trip.driver.name}</TableCell>
             <TableCell className="font-medium">{`${trip.vehicle.brand} ${trip.vehicle.model} ${trip.vehicle.color} - ${trip.vehicle.plate}`}</TableCell>
             <TableCell className="font-medium">{trip.origin.name}</TableCell>
             <TableCell className="font-medium">{trip.destiny.name}</TableCell>

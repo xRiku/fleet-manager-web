@@ -33,7 +33,7 @@ export const trips = sqliteTable("trips", {
   status: text("status").notNull().default(Status.IN_ANALYSIS),
   progress: text("progress"),
 
-  // driverId: text("driver_id").notNull()
+  driverId: text("driver_id").notNull(),
   originId: text("origin_id").notNull(),
   destinyId: text("destiny_id").notNull(),
   vehicleId: text("vehicle_id").notNull(),
@@ -47,8 +47,24 @@ export const trips = sqliteTable("trips", {
     .default(sql`CURRENT_TIMESTAMP`),
 });
 
+export const users = sqliteTable("users", {
+  id: text("id").primaryKey(),
+
+  name: text("name").notNull(),
+  // cpf: text('document_number').notNull().
+  role: text("role").notNull(),
+
+  createdAt: text("created_at")
+    .notNull()
+    .default(sql`CURRENT_TIMESTAMP`),
+});
+
 export const branchesRelations = relations(branches, ({ many }) => ({
   vehicles: many(vehicles),
+}));
+
+export const usersRelations = relations(users, ({ many }) => ({
+  trips: many(trips),
 }));
 
 export const tripsRelations = relations(trips, ({ one }) => ({
@@ -65,6 +81,11 @@ export const tripsRelations = relations(trips, ({ one }) => ({
   vehicle: one(vehicles, {
     fields: [trips.vehicleId],
     references: [vehicles.id],
+  }),
+
+  driver: one(users, {
+    fields: [trips.driverId],
+    references: [users.id],
   }),
 }));
 
