@@ -16,13 +16,12 @@ export type Vehicle = {
   id: string;
   plate: string;
   odometer: number;
-  branch: string;
+  branch: Branch;
   color: string;
   model: string;
-  year: string;
-  manufacturer: string;
-  availability: string;
-}
+  year: number;
+  brand: string;
+};
 
 export type Branch = {
   id: string;

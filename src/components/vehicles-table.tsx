@@ -1,8 +1,7 @@
-import { Vehicle } from "@/types";
+import { Availability, Vehicle } from "@/types";
 import {
   Table,
   TableBody,
-  TableCaption,
   TableCell,
   TableHead,
   TableHeader,
@@ -46,20 +45,22 @@ export default function VehiclesTable({ vehicles }: { vehicles: Vehicle[] }) {
         {vehicles.map((vehicle) => (
           <TableRow key={vehicle.id}>
             <TableCell className="font-medium">{vehicle.model}</TableCell>
-            <TableCell className="font-medium">{vehicle.manufacturer}</TableCell>
+            <TableCell className="font-medium">{vehicle.brand}</TableCell>
             <TableCell className="font-medium">{vehicle.color}</TableCell>
             <TableCell className="w-24">
-              <Badge variant={mapVariant(vehicle.availability)}>
-                {translateAvailability(vehicle.availability)}
+              <Badge variant={mapVariant(Availability.AVAILABLE)}>
+                {translateAvailability(Availability.AVAILABLE)}
               </Badge>
             </TableCell>
             <TableCell className="font-medium">{vehicle.plate}</TableCell>
             <TableCell className="font-medium">{vehicle.year}</TableCell>
             <TableCell className="font-medium">{vehicle.odometer}</TableCell>
-            <TableCell className="text-right font-medium">{vehicle.branch}</TableCell>
+            <TableCell className="text-right font-medium">
+              {vehicle.branch.name}
+            </TableCell>
           </TableRow>
         ))}
       </TableBody>
     </Table>
-  )
+  );
 }

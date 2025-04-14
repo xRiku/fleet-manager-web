@@ -19,7 +19,6 @@ export const vehicles = sqliteTable("vehicles", {
   model: text("model").notNull(),
   brand: text("brand").notNull(),
   odometer: int().notNull(),
-  isAvailable: int().notNull(),
 
   branchId: text("branch_id").notNull(),
 });
