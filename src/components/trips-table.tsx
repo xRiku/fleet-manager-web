@@ -2,7 +2,6 @@ import { Trip } from "@/types";
 import {
   Table,
   TableBody,
-  TableCaption,
   TableCell,
   TableHead,
   TableHeader,
@@ -37,8 +36,9 @@ export default function TripsTable({ trips }: { trips: Trip[] }) {
     <Table>
       <TableHeader>
         <TableRow>
-          <TableHead>Motorista</TableHead>
           <TableHead className="w-24">Status</TableHead>
+          <TableHead>Motorista</TableHead>
+          <TableHead>Carro</TableHead>
           <TableHead>Origem</TableHead>
           <TableHead>Destino</TableHead>
           <TableHead className="text-right">Progresso</TableHead>
@@ -47,15 +47,18 @@ export default function TripsTable({ trips }: { trips: Trip[] }) {
       <TableBody>
         {trips.map((trip) => (
           <TableRow key={trip.id}>
-            <TableCell className="font-medium">{trip.driver}</TableCell>
             <TableCell className="w-24 font-medium">
               <Badge variant={mapVariant(trip.status)}>
                 {translateStatus(trip.status)}
               </Badge>
             </TableCell>
-            <TableCell className="font-medium">{trip.origin}</TableCell>
-            <TableCell className="font-medium">{trip.destiny}</TableCell>
-            <TableCell className="text-right font-medium">{trip.progress}</TableCell>
+            <TableCell className="font-medium">{trip.driver}</TableCell>
+            <TableCell className="font-medium">{`${trip.vehicle.brand} ${trip.vehicle.model} ${trip.vehicle.color} - ${trip.vehicle.plate}`}</TableCell>
+            <TableCell className="font-medium">{trip.origin.name}</TableCell>
+            <TableCell className="font-medium">{trip.destiny.name}</TableCell>
+            <TableCell className="text-right font-medium">
+              {trip.progress}
+            </TableCell>
           </TableRow>
         ))}
       </TableBody>

@@ -1,13 +1,14 @@
 export type Trip = {
   id: string;
   driver?: string;
-  origin?: string;
-  destiny?: string;
+  vehicle: Vehicle;
+  origin: Branch;
+  destiny: Branch;
   status: string;
   odometer?: string;
   progress?: string;
   authorizedBy?: string;
-  createdAt?: string;
+  createdAt: string;
   authorizedAt?: string;
   finishedBy?: string;
 };
@@ -16,7 +17,7 @@ export type Vehicle = {
   id: string;
   plate: string;
   odometer: number;
-  branch: Branch;
+  branch?: Branch;
   color: string;
   model: string;
   year: number;

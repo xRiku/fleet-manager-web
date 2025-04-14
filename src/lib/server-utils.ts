@@ -14,3 +14,13 @@ export const getVehicles = async () => {
     },
   });
 };
+
+export const getTrips = async () => {
+  return await db.query.trips.findMany({
+    with: {
+      origin: true,
+      destiny: true,
+      vehicle: true,
+    },
+  });
+};

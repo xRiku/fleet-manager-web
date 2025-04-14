@@ -1,6 +1,7 @@
 import { relations } from "drizzle-orm";
 import { text, int, sqliteTable } from "drizzle-orm/sqlite-core";
 import { sql } from "drizzle-orm";
+import { Status } from "@/types";
 
 export const branches = sqliteTable("branches", {
   id: text("id").primaryKey(),
@@ -29,7 +30,7 @@ export const vehicles = sqliteTable("vehicles", {
 
 export const trips = sqliteTable("trips", {
   id: text("id").primaryKey(),
-  status: text("status").default("IN_ANALYSIS"),
+  status: text("status").notNull().default(Status.IN_ANALYSIS),
   progress: text("progress"),
 
   // driverId: text("driver_id").notNull()
@@ -38,7 +39,7 @@ export const trips = sqliteTable("trips", {
   vehicleId: text("vehicle_id").notNull(),
 
   authorizedAt: text("authorized_at"),
-  authorized_by: text("authorized_by"),
+  authorizedBy: text("authorized_by"),
   finishedAt: text("finished_at"),
 
   createdAt: text("created_at")
