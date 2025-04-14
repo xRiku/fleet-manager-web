@@ -21,6 +21,15 @@ import {
   FormLabel,
   FormMessage,
 } from "../ui/form";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../ui/select";
+import { Branch } from "@/types";
+import { use } from "react";
 
 const vehicleSchema = z.object({
   plate: z.string(),
@@ -28,14 +37,19 @@ const vehicleSchema = z.object({
   color: z.string(),
   branch: z.string(),
   model: z.string(),
-  year: z.number(),
+  year: z.coerce.number(),
   manufacturer: z.string(),
 });
 
 type VehicleSchema = z.infer<typeof vehicleSchema>;
 
-export function VehicleDialog() {
+export function VehicleDialog({
+  branchesPromise,
+}: {
+  branchesPromise: Promise<Branch[]>;
+}) {
   const { isVehicleModalOpened, toggleIsVehicleModalOpened } = useModalStore();
+  const branches = use(branchesPromise);
 
   const form = useForm<VehicleSchema>({
     resolver: zodResolver(vehicleSchema),
@@ -57,14 +71,6 @@ export function VehicleDialog() {
 
     toggleIsVehicleModalOpened();
   };
-
-  // const handleClick = () => {
-  //   branches.push({
-  //     id: branches.length + 1 + "",
-  //     name: "Caetité" + branches.length + 1,
-  //   });
-  //   toggleIsBranchModalOpened();
-  // };
 
   return (
     <Dialog
@@ -170,23 +176,44 @@ export function VehicleDialog() {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Filial</FormLabel>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Caetité" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {branches.map((branch) => {
+                        return (
+                          <SelectItem key={branch.name} value={branch.name}>
+                            {branch.name}
+                          </SelectItem>
+                        );
+                      })}
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            {/* <FormField
+              control={form.control}
+              name="branch"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Filial</FormLabel>
                   <FormControl>
                     <Input placeholder="Caetité" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
-            />
+            /> */}
           </form>
         </Form>
-        {/* <div className="flex flex-col py-4">
-          <div className="flex flex-col gap-2">
-            <Label htmlFor="name" className="text-right">
-              Nome
-            </Label>
-            <Input id="name" placeholder="Caetité" className="col-span-3" />
-          </div>
-        </div> */}
         <DialogFooter>
           <Button form="vehicle-form" type="submit">
             Criar
