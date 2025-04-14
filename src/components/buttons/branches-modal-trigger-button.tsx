@@ -8,7 +8,7 @@ export default function BranchesModalTriggerButton() {
   const { toggleIsBranchModalOpened } = useModalStore();
 
   return (
-    <Button onClick={toggleIsBranchModalOpened}>
+    <Button onClick={toggleIsBranchModalOpened} className="cursor-pointer">
       <Plus weight="bold" color="white" />
       <span className="relative top-[1px]">Adicionar</span>
     </Button>

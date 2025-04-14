@@ -6,7 +6,8 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "reset:seed": "rm src/db/sqlite.db && npx drizzle-kit push --force && npx tsx src/db/scripts/seed.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.0.1",

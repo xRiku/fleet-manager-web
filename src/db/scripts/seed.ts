@@ -1,4 +1,4 @@
-import { branches, vehicles } from "@/db/schema";
+import { branches, trips, vehicles } from "@/db/schema";
 import { v4 as uuidv4 } from "uuid";
 import { drizzle } from "drizzle-orm/libsql";
 import { createClient } from "@libsql/client";
@@ -51,6 +51,15 @@ async function seed() {
     year: 1980,
     odometer: 987654,
     branchId: insertedBranches[0].id, // Assign to the first branch
+  });
+
+  const insertedVehicles = await db.select().from(vehicles);
+
+  await db.insert(trips).values({
+    id: uuidv4(),
+    vehicleId: insertedVehicles[0].id,
+    originId: insertedBranches[1].id,
+    destinyId: insertedBranches[0].id,
   });
 
   console.log("✅ Done seeding.");

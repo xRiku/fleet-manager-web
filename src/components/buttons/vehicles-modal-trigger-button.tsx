@@ -8,7 +8,7 @@ export default function VehiclesModalTriggerButton() {
   const { toggleIsVehicleModalOpened } = useModalStore();
 
   return (
-    <Button onClick={toggleIsVehicleModalOpened}>
+    <Button onClick={toggleIsVehicleModalOpened} className="cursor-pointer">
       <Plus weight="bold" color="white" />
       <span className="relative top-[1px]">Adicionar</span>
     </Button>
