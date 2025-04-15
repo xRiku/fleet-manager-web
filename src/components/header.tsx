@@ -1,18 +1,17 @@
-import { Bell } from "@phosphor-icons/react/dist/ssr";
+import Image from "next/image";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 
 export default function Header() {
   return (
-    <header className="flex w-full items-center justify-end gap-2 p-2 border-b border-slate-200/95">
-      <Bell />
+    <header className="w-full h-14 p-4 flex justify-between items-center backdrop-blur border-b bg-white/5">
+      <Image width={32} height={32} src="/logo.svg" alt="logo image" />
       <Avatar>
         <AvatarImage src="" />
         <AvatarFallback>PH</AvatarFallback>
       </Avatar>
-      <div className="flex flex-col justify-center ">
-        <p className="font-semibold text-sm">Philipe Marques</p>
-        <p className="font-light text-xs">Gerente</p>
-      </div>
     </header>
+    // <header className="flex w-full items-center justify-center h border-b border-slate-200/95">
+    //   <Bell />
+    // </header>
   );
 }

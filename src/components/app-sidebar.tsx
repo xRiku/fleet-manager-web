@@ -26,7 +26,7 @@ import {
 const items = [
   {
     title: "Home",
-    url: "/",
+    url: "/dashboard",
     icon: House,
   },
   {
@@ -64,7 +64,9 @@ export function AppSidebar() {
       <SidebarContent>
         <SidebarGroup>
           <SidebarGroupLabel className="gap-2 mb-2">
-            <Image width={32} height={32} src="/logo.svg" alt="logo image" />
+            <Link href="/dashboard">
+              <Image width={32} height={32} src="/logo.svg" alt="logo image" />
+            </Link>
             <p className="text-xl font-bold text-primary">Fleet Manager</p>
           </SidebarGroupLabel>
           <SidebarGroupContent>
