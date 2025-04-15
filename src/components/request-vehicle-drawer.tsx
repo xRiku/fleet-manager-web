@@ -11,8 +11,15 @@ import {
 } from "./ui/drawer";
 import { Button } from "./ui/button";
 import { RequestVehicleForm } from "./request-vehicle-form";
+import { Branch, Vehicle } from "@/types";
 
-export function RequestVehicleDrawer() {
+export function RequestVehicleDrawer({
+  branchesPromise,
+  vehiclesPromise,
+}: {
+  branchesPromise: Promise<Branch[]>;
+  vehiclesPromise: Promise<Vehicle[]>;
+}) {
   const { isRequestVehicleModalOpened, toggleRequestVehicleModalOpened } =
     useModalStore();
 
@@ -23,9 +30,12 @@ export function RequestVehicleDrawer() {
     >
       <DrawerContent>
         <DrawerHeader className="text-left">
-          <DrawerTitle>Solicitar veículo</DrawerTitle>
+          <DrawerTitle className="text-lg">Solicitar veículo</DrawerTitle>
         </DrawerHeader>
-        <RequestVehicleForm />
+        <RequestVehicleForm
+          vehiclesPromise={vehiclesPromise}
+          branchesPromise={branchesPromise}
+        />
         <DrawerFooter className="pt-2">
           <DrawerClose asChild>
             <Button variant="outline">Cancelar</Button>

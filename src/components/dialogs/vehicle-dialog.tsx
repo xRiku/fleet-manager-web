@@ -37,7 +37,7 @@ const vehicleSchema = z.object({
   plate: z.string().trim(),
   odometer: z.coerce.number().positive(),
   color: z.string().trim(),
-  branch: z.string().trim(),
+  branchId: z.string().trim(),
   model: z.string().trim(),
   brand: z.string().trim(),
   year: z.coerce.number().positive(),
@@ -62,7 +62,7 @@ export function VehicleDialog({
       year: 0,
       brand: "",
       odometer: 0,
-      branch: branches[0].id,
+      branchId: branches[0].id,
     },
   });
 
@@ -75,7 +75,6 @@ export function VehicleDialog({
         color: capitalize(data.color),
         brand: capitalize(data.brand),
         model: capitalize(data.model),
-        branchId: data.branch,
       });
       toggleIsVehicleModalOpened();
       form.reset();
@@ -184,7 +183,7 @@ export function VehicleDialog({
             />
             <FormField
               control={form.control}
-              name="branch"
+              name="branchId"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Filial</FormLabel>
