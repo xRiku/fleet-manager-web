@@ -1,11 +1,11 @@
 "use server";
 
 import { db } from "@/db";
-import { branches, trips, vehicles } from "@/db/schema";
+import { branches, trips, users, vehicles } from "@/db/schema";
 import { v4 as uuidv4 } from "uuid";
-import { eq } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
-import { Status, Trip, Vehicle } from "@/types";
+import { Status, Vehicle } from "@/types";
 
 export async function createBranch(name: string) {
   const cityExists = await db
@@ -45,16 +45,31 @@ export async function createVehicle(
   revalidatePath("/vehicles", "page");
 }
 
-export async function createVehicleRequest(data: Omit<Trip, "id">) {
+export async function createVehicleRequest(data: {
+  vehicleId: string;
+  originId: string;
+  destinyId: string;
+}) {
   const onGoingRequestWithVehicleExists = await db
     .select()
     .from(trips)
     .where(
-      eq(trips.vehicleId, data.vehicle.id) &&
+      and(
+        eq(trips.vehicleId, data.vehicleId),
         eq(trips.status, Status.IN_ANALYSIS)
+      )
     );
 
   if (onGoingRequestWithVehicleExists.length) {
     throw Error("Ongoing request with the same vehicle already exists.");
   }
+
+  // Please remove me after login is done
+  const randomDriverId = await db.select().from(users);
+
+  await db.insert(trips).values({
+    id: uuidv4(),
+    ...data,
+    driverId: randomDriverId[0].id,
+  });
 }

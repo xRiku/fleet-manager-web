@@ -21,6 +21,8 @@ import {
 import { Branch, Vehicle } from "@/types";
 import { use, useEffect, useState } from "react";
 import { Button } from "./ui/button";
+import { createVehicleRequest } from "@/actions/actions";
+import { useModalStore } from "@/stores/modal-store";
 
 const requestVehicleSchema = z
   .object({
@@ -31,6 +33,10 @@ const requestVehicleSchema = z
   .refine((ctx) => ctx.destinyId !== ctx.originId, {
     message: "Destino não pode ser igual a origem",
     path: ["destinyId"],
+  })
+  .refine((ctx) => ctx.vehicleId !== "", {
+    message: "Selecione um veículo",
+    path: ["vehicleId"],
   });
 
 type RequestVehicleSchema = z.infer<typeof requestVehicleSchema>;
@@ -43,6 +49,7 @@ export function RequestVehicleForm({
   const branches = use(branchesPromise);
   const [vehicles, setVehicles] = useState<Vehicle[]>([]);
   const [isLoadingVehicles, setIsLoadingVehicles] = useState(false);
+  const { toggleRequestVehicleModalOpened } = useModalStore();
 
   const form = useForm<RequestVehicleSchema>({
     resolver: zodResolver(requestVehicleSchema),
@@ -75,8 +82,14 @@ export function RequestVehicleForm({
     asyncFunction();
   }, [form, originId]);
 
-  const onSubmit = (data: RequestVehicleSchema) => {
-    console.log(data);
+  const onSubmit = async (data: RequestVehicleSchema) => {
+    try {
+      await createVehicleRequest(data);
+      toggleRequestVehicleModalOpened();
+      form.reset();
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (
@@ -116,11 +129,11 @@ export function RequestVehicleForm({
             control={form.control}
             name="vehicleId"
             render={({ field }) => (
-              <FormItem key={field.value}>
+              <FormItem>
                 <FormLabel>Veículo</FormLabel>
                 <Select onValueChange={field.onChange} value={field.value}>
                   <FormControl>
-                    <SelectTrigger disabled={!field.value}>
+                    <SelectTrigger>
                       <SelectValue />
                     </SelectTrigger>
                   </FormControl>
