@@ -6,8 +6,8 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "./ui/table";
-import { Badge } from "./ui/badge";
+} from "@/components/ui/table";
+import { Badge } from "@/components/ui/badge";
 
 const mapVariant = (availability: string) => {
   switch (availability) {
@@ -56,7 +56,7 @@ export default function VehiclesTable({ vehicles }: { vehicles: Vehicle[] }) {
             <TableCell className="font-medium">{vehicle.year}</TableCell>
             <TableCell className="font-medium">{vehicle.odometer}</TableCell>
             <TableCell className="text-right font-medium">
-              {vehicle.branch.name}
+              {vehicle.branch?.name}
             </TableCell>
           </TableRow>
         ))}

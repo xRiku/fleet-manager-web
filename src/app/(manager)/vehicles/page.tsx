@@ -1,6 +1,6 @@
 import VehiclesModalTriggerButton from "@/components/buttons/vehicles-modal-trigger-button";
 import { VehicleDialog } from "@/components/dialogs/vehicle-dialog";
-import VehiclesTable from "@/components/vehicles-table";
+import VehiclesTable from "@/components/tables/vehicles-table";
 import { getBranches, getVehicles } from "@/lib/server-utils";
 import { Suspense } from "react";
 

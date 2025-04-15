@@ -25,3 +25,7 @@ export const getTrips = async () => {
     },
   });
 };
+
+export const getUsers = async () => {
+  return await db.query.users.findMany();
+};

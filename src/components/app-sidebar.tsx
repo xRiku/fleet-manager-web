@@ -1,7 +1,5 @@
 "use client";
 
-import { Home, Settings } from "lucide-react";
-
 import {
   Sidebar,
   SidebarContent,
@@ -12,17 +10,24 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import { Car, Garage, Signpost } from "@phosphor-icons/react/dist/ssr";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import {
+  Car,
+  Garage,
+  Gear,
+  House,
+  Signpost,
+  Users,
+} from "@phosphor-icons/react";
 
 // Menu items.
 const items = [
   {
     title: "Home",
     url: "/",
-    icon: Home,
+    icon: House,
   },
   {
     title: "Veículos",
@@ -40,9 +45,14 @@ const items = [
     icon: Garage,
   },
   {
+    title: "Usuários",
+    url: "/users",
+    icon: Users,
+  },
+  {
     title: "Settings",
     url: "#",
-    icon: Settings,
+    icon: Gear,
   },
 ];
 
