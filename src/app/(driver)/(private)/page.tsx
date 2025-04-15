@@ -1,15 +1,31 @@
 import TripsModalTriggerButton from "@/components/buttons/trips-modal-trigger-button";
+import TripsTable from "@/components/tables/trips-table";
+import { getVehicleRequestsForUser } from "@/lib/server-utils";
 import Image from "next/image";
 
-export default function Page() {
-  // const trips = getTripsForUser()
-  const trips = [];
+export default async function Page() {
+  const requests = await getVehicleRequestsForUser();
 
-  if (!trips.length) {
+  if (!requests.length) {
     return <DriverEmptyState />;
   }
 
-  return <div>normar</div>;
+  const trips = requests.map((request) => ({
+    ...request,
+    progress: request.progress ?? undefined, // Map null to undefined for compatibility
+    authorizedBy: request.authorizedBy ?? undefined, // Map null to undefined for compatibility
+    authorizedAt: request.authorizedAt ?? undefined, // Map null to undefined for compatibility
+  }));
+
+  return (
+    <div className="flex flex-col gap-4">
+      <div className="flex items-center justify-between">
+        <span className="text-xl font-medium">Solicitações</span>
+        <TripsModalTriggerButton />
+      </div>
+      <TripsTable trips={trips} />
+    </div>
+  );
 }
 
 function DriverEmptyState() {

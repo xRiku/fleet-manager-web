@@ -1,7 +1,8 @@
 "use server-only";
 
 import { db } from "@/db";
-import { branches } from "@/db/schema";
+import { branches, trips, users } from "@/db/schema";
+import { eq } from "drizzle-orm";
 
 export const getBranches = async () => {
   return await db.select().from(branches);
@@ -31,6 +32,20 @@ export const getTrips = async () => {
       destiny: true,
       vehicle: true,
       driver: true,
+    },
+  });
+};
+
+export const getVehicleRequestsForUser = async () => {
+  // Remove after login
+  const user = await db.select().from(users);
+
+  return await db.query.trips.findMany({
+    where: eq(trips.driverId, user[0].id),
+    with: {
+      vehicle: true,
+      origin: true,
+      destiny: true,
     },
   });
 };
