@@ -19,7 +19,7 @@ import {
   SelectValue,
 } from "./ui/select";
 import { Branch, Vehicle } from "@/types";
-import { use } from "react";
+import { use, useEffect, useState } from "react";
 import { Button } from "./ui/button";
 
 const requestVehicleSchema = z
@@ -37,22 +37,43 @@ type RequestVehicleSchema = z.infer<typeof requestVehicleSchema>;
 
 export function RequestVehicleForm({
   branchesPromise,
-  vehiclesPromise,
 }: {
   branchesPromise: Promise<Branch[]>;
-  vehiclesPromise: Promise<Vehicle[]>;
 }) {
   const branches = use(branchesPromise);
-  const vehicles = use(vehiclesPromise);
+  const [vehicles, setVehicles] = useState<Vehicle[]>([]);
+  const [isLoadingVehicles, setIsLoadingVehicles] = useState(false);
 
   const form = useForm<RequestVehicleSchema>({
     resolver: zodResolver(requestVehicleSchema),
     defaultValues: {
       originId: branches[0].id,
       destinyId: branches[1].id,
-      vehicleId: vehicles[0].id,
+      vehicleId: "",
     },
   });
+
+  const originId = form.watch("originId");
+
+  useEffect(() => {
+    if (!originId) return;
+
+    async function asyncFunction() {
+      setIsLoadingVehicles(true);
+      try {
+        const fetchedVehicles = await fetch(`/api/vehicles/${originId}`);
+        const parsedFetchedVehicles = await fetchedVehicles.json();
+        setVehicles(parsedFetchedVehicles);
+        form.setValue("vehicleId", parsedFetchedVehicles[0]?.id || "");
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setIsLoadingVehicles(false);
+      }
+    }
+
+    asyncFunction();
+  }, [form, originId]);
 
   const onSubmit = (data: RequestVehicleSchema) => {
     console.log(data);
@@ -65,34 +86,6 @@ export function RequestVehicleForm({
           onSubmit={form.handleSubmit(onSubmit)}
           className="flex flex-col gap-4"
         >
-          <FormField
-            control={form.control}
-            name="vehicleId"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Veículo</FormLabel>
-                <Select onValueChange={field.onChange} value={field.value}>
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue
-                        placeholder={`${vehicles[0].brand} ${vehicles[0].model} - ${vehicles[0].color}`}
-                      />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    {vehicles.map((vehicle) => {
-                      return (
-                        <SelectItem key={vehicle.id} value={vehicle.id}>
-                          {`${vehicle.brand} ${vehicle.model} - ${vehicle.color}`}
-                        </SelectItem>
-                      );
-                    })}
-                  </SelectContent>
-                </Select>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
           <FormField
             control={form.control}
             name="originId"
@@ -110,6 +103,32 @@ export function RequestVehicleForm({
                       return (
                         <SelectItem key={branch.id} value={branch.id}>
                           {branch.name}
+                        </SelectItem>
+                      );
+                    })}
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="vehicleId"
+            render={({ field }) => (
+              <FormItem key={field.value}>
+                <FormLabel>Veículo</FormLabel>
+                <Select onValueChange={field.onChange} value={field.value}>
+                  <FormControl>
+                    <SelectTrigger disabled={!field.value}>
+                      <SelectValue />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {vehicles.map((vehicle) => {
+                      return (
+                        <SelectItem key={vehicle.id} value={vehicle.id}>
+                          {`${vehicle.brand} ${vehicle.model} - ${vehicle.color}`}
                         </SelectItem>
                       );
                     })}

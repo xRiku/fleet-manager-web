@@ -15,6 +15,15 @@ export const getVehicles = async () => {
   });
 };
 
+export const getVehiclesForBranch = async (branchId: string) => {
+  return await db.query.vehicles.findMany({
+    with: {
+      branch: true,
+    },
+    where: (vehicle, { eq }) => eq(vehicle.branchId, branchId),
+  });
+};
+
 export const getTrips = async () => {
   return await db.query.trips.findMany({
     with: {

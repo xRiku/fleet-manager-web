@@ -1,11 +1,11 @@
 "use server";
 
 import { db } from "@/db";
-import { branches, vehicles } from "@/db/schema";
+import { branches, trips, vehicles } from "@/db/schema";
 import { v4 as uuidv4 } from "uuid";
 import { eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
-import { Vehicle } from "@/types";
+import { Status, Trip, Vehicle } from "@/types";
 
 export async function createBranch(name: string) {
   const cityExists = await db
@@ -43,4 +43,18 @@ export async function createVehicle(
   });
 
   revalidatePath("/vehicles", "page");
+}
+
+export async function createVehicleRequest(data: Omit<Trip, "id">) {
+  const onGoingRequestWithVehicleExists = await db
+    .select()
+    .from(trips)
+    .where(
+      eq(trips.vehicleId, data.vehicle.id) &&
+        eq(trips.status, Status.IN_ANALYSIS)
+    );
+
+  if (onGoingRequestWithVehicleExists.length) {
+    throw Error("Ongoing request with the same vehicle already exists.");
+  }
 }
