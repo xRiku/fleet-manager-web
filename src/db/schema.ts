@@ -20,6 +20,7 @@ export const vehicles = sqliteTable("vehicles", {
   model: text("model").notNull(),
   brand: text("brand").notNull(),
   odometer: int().notNull(),
+  availability: text("availability").notNull(),
 
   branchId: text("branch_id").notNull(),
 
@@ -38,8 +39,8 @@ export const trips = sqliteTable("trips", {
   destinyId: text("destiny_id").notNull(),
   vehicleId: text("vehicle_id").notNull(),
 
-  authorizedAt: text("authorized_at"),
-  authorizedBy: text("authorized_by"),
+  reviewedAt: text("reviewed_at"),
+  reviewedBy: text("reviewed_by"),
   finishedAt: text("finished_at"),
 
   createdAt: text("created_at")

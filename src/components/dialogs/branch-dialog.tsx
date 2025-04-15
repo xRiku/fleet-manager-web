@@ -11,14 +11,12 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useModalStore } from "@/stores/modal-store";
 import { Button } from "../ui/button";
-import { branches } from "@/db/branches";
 import { useState } from "react";
 import { createBranch } from "@/actions/actions";
 
 export function BranchDialog() {
   const { isBranchModalOpened, toggleIsBranchModalOpened } = useModalStore();
   const [name, setName] = useState("");
-  const [error, setError] = useState("");
 
   const handleClick = async () => {
     try {

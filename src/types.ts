@@ -7,9 +7,9 @@ export type Trip = {
   status: string;
   odometer?: string;
   progress?: string;
-  authorizedBy?: string;
+  reviewedBy?: string;
   createdAt: string;
-  authorizedAt?: string;
+  reviewedAt?: string;
   finishedBy?: string;
 };
 
@@ -22,6 +22,7 @@ export type Vehicle = {
   model: string;
   year: number;
   brand: string;
+  availability: Availability;
 };
 
 export type Branch = {
@@ -37,7 +38,7 @@ export type User = {
 
 export enum Status {
   APPROVED = "approved",
-  DENIED = "denied",
+  REJECTED = "rejected",
   IN_ANALYSIS = "inAnalysis",
 }
 

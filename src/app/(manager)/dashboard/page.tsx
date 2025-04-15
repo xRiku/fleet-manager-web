@@ -7,8 +7,8 @@ export default async function Home() {
   const trips = (await getTrips()).map((trip) => ({
     ...trip,
     progress: trip.progress ?? undefined,
-    authorizedAt: trip.authorizedAt ?? undefined,
-    authorizedBy: trip.authorizedBy ?? undefined,
+    reviewedAt: trip.reviewedAt ?? undefined,
+    reviewedBy: trip.reviewedBy ?? undefined,
     driver: {
       ...trip.driver,
       role: trip.driver.role as Role, // Ensure driver.role is cast to the Role type

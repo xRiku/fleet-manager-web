@@ -1,3 +1,4 @@
+import { ReviewRequestDialog } from "@/components/dialogs/review-request-dialog";
 import TripsTable from "@/components/tables/trips-table";
 import { getTrips } from "@/lib/server-utils";
 import { Role } from "@/types";
@@ -10,8 +11,8 @@ export default async function Page() {
       role: trip.driver.role as Role, // Ensure role is cast to the correct type
     },
     progress: trip.progress ?? undefined, // Convert null to undefined for compatibility
-    authorizedBy: trip.authorizedBy ?? undefined, // Convert null to undefined for compatibility
-    authorizedAt: trip.authorizedAt ?? undefined, // Convert null to undefined for compatibility
+    reviewedAt: trip.reviewedAt ?? undefined, // Convert null to undefined for compatibility
+    reviewedBy: trip.reviewedBy ?? undefined, // Convert null to undefined for compatibility
   }));
 
   return (
@@ -20,6 +21,7 @@ export default async function Page() {
         <h1 className="text-xl font-semibold mb-6">Viagens</h1>
       </div>
       <TripsTable trips={trips} />
+      <ReviewRequestDialog />
     </div>
   );
 }

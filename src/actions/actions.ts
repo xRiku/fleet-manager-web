@@ -5,7 +5,7 @@ import { branches, trips, users, vehicles } from "@/db/schema";
 import { v4 as uuidv4 } from "uuid";
 import { and, eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
-import { Status, Vehicle } from "@/types";
+import { Availability, Progress, Status, Vehicle } from "@/types";
 
 export async function createBranch(name: string) {
   const cityExists = await db
@@ -26,7 +26,7 @@ export async function createBranch(name: string) {
 }
 
 export async function createVehicle(
-  data: Omit<Vehicle, "id" | "branch"> & { branchId: string }
+  data: Omit<Vehicle, "id" | "branch" | "availability"> & { branchId: string }
 ) {
   const vehicleExists = await db
     .select()
@@ -40,6 +40,7 @@ export async function createVehicle(
   await db.insert(vehicles).values({
     id: uuidv4(),
     ...data,
+    availability: Availability.AVAILABLE,
   });
 
   revalidatePath("/vehicles", "page");
@@ -72,4 +73,60 @@ export async function createVehicleRequest(data: {
     ...data,
     driverId: randomDriverId[0].id,
   });
+}
+
+export async function approveRequest(tripId: string) {
+  const trip = await db.query.trips.findFirst({
+    where: eq(trips.id, tripId),
+  });
+
+  if (!trip) {
+    throw Error("Invalid tripId");
+  }
+
+  // remove after login
+  const user = await db.query.users.findFirst({
+    where: eq(users.name, "Philipe Marques"),
+  });
+
+  await db
+    .update(trips)
+    .set({
+      reviewedAt: new Date().toISOString(),
+      reviewedBy: user?.id,
+      status: Status.REJECTED,
+      progress: Progress.IN_PROGRESS,
+    })
+    .where(eq(trips.id, trip.id));
+
+  await db
+    .update(vehicles)
+    .set({
+      availability: Availability.UNAVAILABLE,
+    })
+    .where(eq(vehicles.id, trip.vehicleId));
+}
+
+export async function rejectRequest(tripId: string) {
+  const trip = await db.query.trips.findFirst({
+    where: eq(trips.id, tripId),
+  });
+
+  if (!trip) {
+    throw Error("Invalid tripId");
+  }
+
+  // remove after login
+  const user = await db.query.users.findFirst({
+    where: eq(users.name, "Philipe Marques"),
+  });
+
+  await db
+    .update(trips)
+    .set({
+      reviewedAt: new Date().toISOString(),
+      reviewedBy: user?.id,
+      status: Status.REJECTED,
+    })
+    .where(eq(trips.id, trip.id));
 }

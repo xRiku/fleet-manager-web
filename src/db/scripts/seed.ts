@@ -3,7 +3,7 @@ import { v4 as uuidv4 } from "uuid";
 import { drizzle } from "drizzle-orm/libsql";
 import { createClient } from "@libsql/client";
 import "dotenv/config";
-import { Role } from "@/types";
+import { Availability, Role } from "@/types";
 
 if (!process.env.DB_FILE_NAME) {
   throw new Error("Environment variable DB_FILE_NAME is not defined.");
@@ -30,6 +30,7 @@ async function seed() {
     year: 1980,
     odometer: 123456,
     branchId: insertedBranches[0].id, // Assign to the first branch
+    availability: Availability.UNAVAILABLE,
   });
 
   await db.insert(vehicles).values({
@@ -41,6 +42,7 @@ async function seed() {
     year: 2020,
     odometer: 654321,
     branchId: insertedBranches[1].id, // Assign to the second branch
+    availability: Availability.AVAILABLE,
   });
 
   await db.insert(vehicles).values({
@@ -52,6 +54,7 @@ async function seed() {
     year: 1980,
     odometer: 987654,
     branchId: insertedBranches[0].id, // Assign to the first branch
+    availability: Availability.AVAILABLE,
   });
 
   await db.insert(users).values({
