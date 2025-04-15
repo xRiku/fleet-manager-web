@@ -30,7 +30,7 @@ async function seed() {
     year: 1980,
     odometer: 123456,
     branchId: insertedBranches[0].id, // Assign to the first branch
-    availability: Availability.UNAVAILABLE,
+    availability: Availability.AVAILABLE,
   });
 
   await db.insert(vehicles).values({

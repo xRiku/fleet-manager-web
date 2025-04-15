@@ -1,4 +1,4 @@
-import { Trip } from "@/types";
+import { Status, Trip } from "@/types";
 import {
   Table,
   TableBody,
@@ -75,7 +75,9 @@ export default function TripsTable({
             <TableCell className="font-medium">{trip.origin.name}</TableCell>
             <TableCell className="font-medium">{trip.destiny.name}</TableCell>
             <TableCell className="font-medium">
-              <ReviewRequestModalTriggerButton tripId={trip.id} />
+              {trip.status === Status.IN_ANALYSIS && (
+                <ReviewRequestModalTriggerButton tripId={trip.id} />
+              )}
             </TableCell>
           </TableRow>
         ))}

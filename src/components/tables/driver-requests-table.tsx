@@ -9,9 +9,6 @@ import {
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { format } from "date-fns";
-import { NotePencil } from "@phosphor-icons/react/dist/ssr";
-import { Button } from "../ui/button";
-import ReviewRequestModalTriggerButton from "../buttons/review-request-modal-trigger-button";
 
 const mapVariant = (status: string) => {
   switch (status) {
@@ -55,7 +52,6 @@ export default function TripsTable({
           <TableHead>Carro</TableHead>
           <TableHead>Origem</TableHead>
           <TableHead>Destino</TableHead>
-          <TableHead className="text-right"></TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
@@ -76,11 +72,6 @@ export default function TripsTable({
             <TableCell className="font-medium">{`${trip.vehicle.brand} ${trip.vehicle.model} ${trip.vehicle.color} - ${trip.vehicle.plate}`}</TableCell>
             <TableCell className="font-medium">{trip.origin.name}</TableCell>
             <TableCell className="font-medium">{trip.destiny.name}</TableCell>
-            <TableCell className="font-medium">
-              <ReviewRequestModalTriggerButton>
-                <NotePencil size={24} />
-              </ReviewRequestModalTriggerButton>
-            </TableCell>
           </TableRow>
         ))}
       </TableBody>

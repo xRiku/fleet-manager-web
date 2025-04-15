@@ -51,20 +51,6 @@ export async function createVehicleRequest(data: {
   originId: string;
   destinyId: string;
 }) {
-  const onGoingRequestWithVehicleExists = await db
-    .select()
-    .from(trips)
-    .where(
-      and(
-        eq(trips.vehicleId, data.vehicleId),
-        eq(trips.status, Status.IN_ANALYSIS)
-      )
-    );
-
-  if (onGoingRequestWithVehicleExists.length) {
-    throw Error("Ongoing request with the same vehicle already exists.");
-  }
-
   // Please remove me after login is done
   const randomDriverId = await db.select().from(users);
 
@@ -94,7 +80,7 @@ export async function approveRequest(tripId: string) {
     .set({
       reviewedAt: new Date().toISOString(),
       reviewedBy: user?.id,
-      status: Status.REJECTED,
+      status: Status.APPROVED,
       progress: Progress.IN_PROGRESS,
     })
     .where(eq(trips.id, trip.id));
@@ -105,6 +91,8 @@ export async function approveRequest(tripId: string) {
       availability: Availability.UNAVAILABLE,
     })
     .where(eq(vehicles.id, trip.vehicleId));
+
+  revalidatePath("/trips", "page");
 }
 
 export async function rejectRequest(tripId: string) {
@@ -129,4 +117,6 @@ export async function rejectRequest(tripId: string) {
       status: Status.REJECTED,
     })
     .where(eq(trips.id, trip.id));
+
+  revalidatePath("/trips", "page");
 }
