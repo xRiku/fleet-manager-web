@@ -32,7 +32,7 @@ const translateStatus = (status: string) => {
   }
 };
 
-export default function TripsTable({
+export default function DriverRequestsTable({
   trips,
 }: {
   trips: Trip[] | Omit<Trip, "driver">[];

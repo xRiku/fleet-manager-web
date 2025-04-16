@@ -1,5 +1,5 @@
 import TripsModalTriggerButton from "@/components/buttons/trips-modal-trigger-button";
-import TripsTable from "@/components/tables/trips-table";
+import DriverRequestsTable from "@/components/tables/driver-requests-table";
 import { getVehicleRequestsForUser } from "@/lib/server-utils";
 import Image from "next/image";
 
@@ -13,8 +13,8 @@ export default async function Page() {
   const trips = requests.map((request) => ({
     ...request,
     progress: request.progress ?? undefined, // Map null to undefined for compatibility
-    authorizedBy: request.authorizedBy ?? undefined, // Map null to undefined for compatibility
-    authorizedAt: request.authorizedAt ?? undefined, // Map null to undefined for compatibility
+    reviewedBy: request.reviewedBy ?? undefined, // Map null to undefined for compatibility
+    reviewedAt: request.reviewedAt ?? undefined, // Map null to undefined for compatibility
   }));
 
   return (
@@ -23,7 +23,7 @@ export default async function Page() {
         <span className="text-xl font-medium">Solicitações</span>
         <TripsModalTriggerButton />
       </div>
-      <TripsTable trips={trips} />
+      <DriverRequestsTable trips={trips} />
     </div>
   );
 }

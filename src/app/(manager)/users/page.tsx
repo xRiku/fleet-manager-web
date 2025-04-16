@@ -1,4 +1,5 @@
 import UsersModalTriggerButton from "@/components/buttons/users-modal-trigger-button";
+import { CreateUserDialog } from "@/components/dialogs/create-user-dialog";
 import UsersTable from "@/components/tables/users-table";
 import { getUsers } from "@/lib/server-utils";
 import { Role } from "@/types";
@@ -17,6 +18,7 @@ export default async function Home() {
         <UsersModalTriggerButton />
       </div>
       <UsersTable users={users} />
+      <CreateUserDialog />
     </div>
   );
 }

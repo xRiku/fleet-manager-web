@@ -5,11 +5,11 @@ import { Button } from "../ui/button";
 import { Plus } from "@phosphor-icons/react";
 
 export default function TripsModalTriggerButton() {
-  const { toggleRequestVehicleModalOpened } = useModalStore();
+  const { toggleIsRequestVehicleModalOpened } = useModalStore();
 
   return (
     <Button
-      onClick={toggleRequestVehicleModalOpened}
+      onClick={toggleIsRequestVehicleModalOpened}
       className="cursor-pointer "
     >
       <Plus weight="bold" color="white" />

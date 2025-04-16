@@ -52,7 +52,7 @@ export const users = sqliteTable("users", {
   id: text("id").primaryKey(),
 
   name: text("name").notNull(),
-  // cpf: text('document_number').notNull().
+  documentNumber: text("document_number").notNull(),
   role: text("role").notNull(),
 
   createdAt: text("created_at")

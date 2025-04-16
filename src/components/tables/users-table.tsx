@@ -19,6 +19,7 @@ export default function UsersTable({ users }: { users: User[] }) {
         <TableRow>
           <TableHead>Nome completo</TableHead>
           <TableHead>Cargo</TableHead>
+          <TableHead></TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
@@ -38,6 +39,7 @@ export default function UsersTable({ users }: { users: User[] }) {
                 )}
               </p>
             </TableCell>
+            <TableCell className="font-medium"></TableCell>
           </TableRow>
         ))}
       </TableBody>

@@ -18,13 +18,13 @@ export function RequestVehicleDrawer({
 }: {
   branchesPromise: Promise<Branch[]>;
 }) {
-  const { isRequestVehicleModalOpened, toggleRequestVehicleModalOpened } =
+  const { isRequestVehicleModalOpened, toggleIsRequestVehicleModalOpened } =
     useModalStore();
 
   return (
     <Drawer
       open={isRequestVehicleModalOpened}
-      onOpenChange={toggleRequestVehicleModalOpened}
+      onOpenChange={toggleIsRequestVehicleModalOpened}
     >
       <DrawerContent>
         <DrawerHeader className="text-left">

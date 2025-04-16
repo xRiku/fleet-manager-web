@@ -2,6 +2,7 @@
 
 import { db } from "@/db";
 import { branches, trips, users } from "@/db/schema";
+import { Availability } from "@/types";
 import { eq } from "drizzle-orm";
 
 export const getBranches = async () => {
@@ -21,7 +22,11 @@ export const getVehiclesForBranch = async (branchId: string) => {
     with: {
       branch: true,
     },
-    where: (vehicle, { eq }) => eq(vehicle.branchId, branchId),
+    where: (vehicle, { eq, and }) =>
+      and(
+        eq(vehicle.branchId, branchId),
+        eq(vehicle.availability, Availability.AVAILABLE)
+      ),
   });
 };
 

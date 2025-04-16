@@ -17,7 +17,6 @@ export default function ReviewRequestModalTriggerButton({
   });
 
   const handleClick = async () => {
-    console.log("clicked");
     setSelectedTripId(tripId);
     toggleIsReviewRequestModalOpened();
   };

@@ -3,9 +3,31 @@
 import { db } from "@/db";
 import { branches, trips, users, vehicles } from "@/db/schema";
 import { v4 as uuidv4 } from "uuid";
-import { and, eq } from "drizzle-orm";
+import { eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { Availability, Progress, Status, Vehicle } from "@/types";
+
+export async function createUser(data: {
+  name: string;
+  documentNumber: string;
+  role: string;
+}) {
+  const userExists = await db
+    .select()
+    .from(users)
+    .where(eq(users.documentNumber, data.documentNumber));
+
+  if (userExists.length) {
+    throw Error("User with the same document number already exists.");
+  }
+
+  await db.insert(users).values({
+    id: uuidv4(),
+    ...data,
+  });
+
+  revalidatePath("/users", "page");
+}
 
 export async function createBranch(name: string) {
   const cityExists = await db

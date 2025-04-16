@@ -60,12 +60,14 @@ async function seed() {
   await db.insert(users).values({
     id: uuidv4(),
     name: "Philipe Marques",
+    documentNumber: "00000000000",
     role: Role.ADMIN,
   });
 
   await db.insert(users).values({
     id: uuidv4(),
     name: "João Marques",
+    documentNumber: "00000000010",
     role: Role.USER,
   });
 

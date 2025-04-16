@@ -49,7 +49,7 @@ export function RequestVehicleForm({
   const branches = use(branchesPromise);
   const [vehicles, setVehicles] = useState<Vehicle[]>([]);
   const [isLoadingVehicles, setIsLoadingVehicles] = useState(false);
-  const { toggleRequestVehicleModalOpened } = useModalStore();
+  const { toggleIsRequestVehicleModalOpened } = useModalStore();
 
   const form = useForm<RequestVehicleSchema>({
     resolver: zodResolver(requestVehicleSchema),
@@ -85,7 +85,7 @@ export function RequestVehicleForm({
   const onSubmit = async (data: RequestVehicleSchema) => {
     try {
       await createVehicleRequest(data);
-      toggleRequestVehicleModalOpened();
+      toggleIsRequestVehicleModalOpened();
       form.reset();
     } catch (error) {
       console.error(error);
