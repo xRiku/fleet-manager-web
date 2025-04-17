@@ -2,7 +2,7 @@
 
 import { db } from "@/db";
 import { branches, trips, users } from "@/db/schema";
-import { Availability } from "@/types";
+import { Availability, Progress } from "@/types";
 import { eq } from "drizzle-orm";
 
 export const getBranches = async () => {
@@ -41,7 +41,7 @@ export const getTrips = async () => {
   });
 };
 
-export const getVehicleRequestsForUser = async () => {
+export const getVehicleRequestsForDriver = async () => {
   // Remove after login
   const user = await db.select().from(users);
 
@@ -57,4 +57,27 @@ export const getVehicleRequestsForUser = async () => {
 
 export const getUsers = async () => {
   return await db.query.users.findMany();
+};
+
+export const getCurrentTripForDriver = async () => {
+  const driver = await db.query.users.findFirst({
+    where: (users, { eq }) => eq(users.name, "Philipe Marques"),
+  });
+
+  if (!driver) {
+    return;
+  }
+
+  return await db.query.trips.findFirst({
+    with: {
+      destiny: true,
+      vehicle: true,
+      origin: true,
+    },
+    where: (trips, { eq, and }) =>
+      and(
+        eq(trips.driverId, driver.id),
+        eq(trips.progress, Progress.IN_PROGRESS)
+      ),
+  });
 };

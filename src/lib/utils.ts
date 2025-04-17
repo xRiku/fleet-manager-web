@@ -33,3 +33,36 @@ export function formatCPF(value: string) {
     .replace(/(\d{3})(\d)/, "$1.$2")
     .replace(/(\d{3})(\d{1,2})$/, "$1-$2");
 }
+
+export const mapVariant = (status: string) => {
+  switch (status) {
+    case "approved":
+      return "success";
+    case "rejected":
+      return "destructive";
+    default:
+      return "inAnalysis";
+  }
+};
+
+export const translateProgress = (progress?: string) => {
+  if (progress) {
+    switch (progress) {
+      case "inProgress":
+        return "Em trânsito";
+      default:
+        return "Finalizado";
+    }
+  }
+};
+
+export const translateStatus = (status: string) => {
+  switch (status) {
+    case "approved":
+      return "Aprovado";
+    case "rejected":
+      return "Recusado";
+    case "inAnalysis":
+      return "Em análise";
+  }
+};
