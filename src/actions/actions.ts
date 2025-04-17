@@ -142,3 +142,23 @@ export async function rejectRequest(tripId: string) {
 
   revalidatePath("/trips", "page");
 }
+
+
+// export async function loginRequest(data: {
+//   email: string;
+//   password: string;
+// }) {
+//   const user = await db.query.users.findFirst({
+//     where: eq(users.email, data.email),
+//   });
+
+//   if (!user) {
+//     throw Error("User not found");
+//   }
+
+//   if (user.password !== data.password) {
+//     throw Error("Invalid password");
+//   }
+
+//   return user;
+// }
