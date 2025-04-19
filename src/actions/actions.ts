@@ -82,6 +82,21 @@ export async function createVehicleRequest(data: {
     driverId: randomDriverId[0].id,
   });
 
+  await db.transaction(async (tx) => {
+    await tx.insert(trips).values({
+      id: uuidv4(),
+      ...data,
+      driverId: randomDriverId[0].id,
+      status: Status.IN_ANALYSIS,
+    });
+    await tx
+      .update(vehicles)
+      .set({
+        availability: Availability.UNAVAILABLE,
+      })
+      .where(eq(vehicles.id, data.vehicleId));
+  });
+
   revalidatePath("/", "page");
 }
 
@@ -99,22 +114,23 @@ export async function approveRequest(tripId: string) {
     where: eq(users.name, "Philipe Marques"),
   });
 
-  await db
-    .update(trips)
-    .set({
-      reviewedAt: new Date().toISOString(),
-      reviewedBy: user?.id,
-      status: Status.APPROVED,
-      progress: Progress.IN_PROGRESS,
-    })
-    .where(eq(trips.id, trip.id));
-
-  await db
-    .update(vehicles)
-    .set({
-      availability: Availability.UNAVAILABLE,
-    })
-    .where(eq(vehicles.id, trip.vehicleId));
+  await db.transaction(async (tsx) => {
+    await tsx
+      .update(trips)
+      .set({
+        reviewedAt: new Date().toISOString(),
+        reviewedBy: user?.id,
+        status: Status.APPROVED,
+        progress: Progress.IN_PROGRESS,
+      })
+      .where(eq(trips.id, trip.id));
+    await tsx
+      .update(vehicles)
+      .set({
+        availability: Availability.UNAVAILABLE,
+      })
+      .where(eq(vehicles.id, trip.vehicleId));
+  });
 
   revalidatePath("/trips", "page");
 }

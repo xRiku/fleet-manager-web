@@ -14,7 +14,7 @@ export const branches = sqliteTable("branches", {
 export const vehicles = sqliteTable("vehicles", {
   id: text("id").primaryKey(),
 
-  plate: text("plate").notNull(),
+  plate: text("plate").notNull().unique(),
   color: text("color").notNull(),
   year: int().notNull(),
   model: text("model").notNull(),
@@ -52,7 +52,7 @@ export const users = sqliteTable("users", {
   id: text("id").primaryKey(),
 
   name: text("name").notNull(),
-  documentNumber: text("document_number").notNull(),
+  documentNumber: text("document_number").notNull().unique(),
   role: text("role").notNull(),
 
   createdAt: text("created_at")
