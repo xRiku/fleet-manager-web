@@ -2,14 +2,13 @@
 
 import { useModalStore } from "@/stores/modal-store";
 import { Button } from "../ui/button";
-import { Plus } from "@phosphor-icons/react";
 
-export default function CompleteTripModalTriggerButton() {
-  const { toggleIsRequestVehicleModalOpened } = useModalStore();
+export default function CompleteTripConfirmationModalTriggerButton() {
+  const { toggleIsCompleteTripConfirmationModalOpened } = useModalStore();
 
   return (
     <Button
-      onClick={toggleIsRequestVehicleModalOpened}
+      onClick={toggleIsCompleteTripConfirmationModalOpened}
       className="cursor-pointer self-center"
       variant="default"
     >

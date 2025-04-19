@@ -38,20 +38,28 @@ export const getTrips = async () => {
       vehicle: true,
       driver: true,
     },
+    orderBy: (trips, { desc }) => [desc(trips.createdAt)],
   });
 };
 
 export const getVehicleRequestsForDriver = async () => {
   // Remove after login
-  const user = await db.select().from(users);
+  const driver = await db.query.users.findFirst({
+    where: (users, { eq }) => eq(users.name, "Philipe Marques"),
+  });
+
+  if (!driver) {
+    throw Error("Driver not found.");
+  }
 
   return await db.query.trips.findMany({
-    where: eq(trips.driverId, user[0].id),
+    where: eq(trips.driverId, driver.id),
     with: {
       vehicle: true,
       origin: true,
       destiny: true,
     },
+    orderBy: (trips, { desc }) => [desc(trips.createdAt)],
   });
 };
 
@@ -60,6 +68,7 @@ export const getUsers = async () => {
 };
 
 export const getCurrentTripForDriver = async () => {
+  // remove
   const driver = await db.query.users.findFirst({
     where: (users, { eq }) => eq(users.name, "Philipe Marques"),
   });

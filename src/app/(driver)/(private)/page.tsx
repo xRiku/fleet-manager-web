@@ -6,14 +6,13 @@ import {
 } from "@/lib/server-utils";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Image from "next/image";
-import CompleteTripModalTriggerButton from "@/components/buttons/complete-trip-modal-trigger-button";
+import CompleteTripConfirmationModalTriggerButton from "@/components/buttons/complete-trip-confirmation-modal-trigger-button";
 import { Car, FlagBannerFold, MapPin } from "@phosphor-icons/react/dist/ssr";
 
 export default async function Page() {
   const requests = await getVehicleRequestsForDriver();
   const currentTrip = await getCurrentTripForDriver();
 
-  const isCurrentTripNull = false;
   if (!requests.length) {
     return <VehicleRequestsEmptyState />;
   }
@@ -32,9 +31,7 @@ export default async function Page() {
         <TabsTrigger value="requests">Solicitações</TabsTrigger>
       </TabsList>
       <TabsContent value="current-trip">
-        {isCurrentTripNull ? (
-          <CurrentTripEmptyState />
-        ) : (
+        {currentTrip ? (
           <div className="flex flex-col gap-8 h-full">
             <div className="w-full rounded-md bg-muted flex flex-col p-4">
               <span className="font-semibold mb-2">17/04/2025</span>
@@ -53,8 +50,10 @@ export default async function Page() {
               </span>
             </div>
 
-            <CompleteTripModalTriggerButton />
+            <CompleteTripConfirmationModalTriggerButton />
           </div>
+        ) : (
+          <CurrentTripEmptyState />
         )}
       </TabsContent>
       <TabsContent value="requests">
@@ -65,8 +64,6 @@ export default async function Page() {
           </div>
         </div>
       </TabsContent>
-      {/* <div className="mt-auto"> */}
-      {/* </div> */}
     </Tabs>
   );
 }
