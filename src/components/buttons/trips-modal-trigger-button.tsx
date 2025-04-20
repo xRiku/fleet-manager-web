@@ -10,9 +10,10 @@ export default function TripsModalTriggerButton() {
   return (
     <Button
       onClick={toggleIsRequestVehicleModalOpened}
-      className="cursor-pointer "
+      className="cursor-pointer w-full"
+      variant="outline"
     >
-      <Plus weight="bold" color="white" />
+      <Plus weight="bold" className="text-foreground" />
       <span>Solicitar veículo</span>
     </Button>
   );

@@ -2,7 +2,7 @@
 
 import { db } from "@/db";
 import { branches, trips, users } from "@/db/schema";
-import { Availability } from "@/types";
+import { Availability, Progress } from "@/types";
 import { eq } from "drizzle-orm";
 
 export const getBranches = async () => {
@@ -38,23 +38,55 @@ export const getTrips = async () => {
       vehicle: true,
       driver: true,
     },
+    orderBy: (trips, { desc }) => [desc(trips.createdAt)],
   });
 };
 
-export const getVehicleRequestsForUser = async () => {
+export const getVehicleRequestsForDriver = async () => {
   // Remove after login
-  const user = await db.select().from(users);
+  const driver = await db.query.users.findFirst({
+    where: (users, { eq }) => eq(users.name, "Philipe Marques"),
+  });
+
+  if (!driver) {
+    throw Error("Driver not found.");
+  }
 
   return await db.query.trips.findMany({
-    where: eq(trips.driverId, user[0].id),
+    where: eq(trips.driverId, driver.id),
     with: {
       vehicle: true,
       origin: true,
       destiny: true,
     },
+    orderBy: (trips, { desc }) => [desc(trips.createdAt)],
   });
 };
 
 export const getUsers = async () => {
   return await db.query.users.findMany();
+};
+
+export const getCurrentTripForDriver = async () => {
+  // remove
+  const driver = await db.query.users.findFirst({
+    where: (users, { eq }) => eq(users.name, "Philipe Marques"),
+  });
+
+  if (!driver) {
+    return;
+  }
+
+  return await db.query.trips.findFirst({
+    with: {
+      destiny: true,
+      vehicle: true,
+      origin: true,
+    },
+    where: (trips, { eq, and }) =>
+      and(
+        eq(trips.driverId, driver.id),
+        eq(trips.progress, Progress.IN_PROGRESS)
+      ),
+  });
 };

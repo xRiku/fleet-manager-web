@@ -4,7 +4,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 export default function Header() {
   return (
     <header className="w-full h-14 p-4 flex justify-between items-center backdrop-blur border-b bg-white/5">
-      <Image width={32} height={32} src="/logo.svg" alt="logo image" />
+      <Image width={42} height={42} src="/logo.png" alt="logo image" />
       <Avatar>
         <AvatarImage src="" />
         <AvatarFallback>PH</AvatarFallback>

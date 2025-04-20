@@ -6,6 +6,7 @@ type States = {
   isUserModalOpened: boolean;
   isRequestVehicleModalOpened: boolean;
   isReviewRequestModalOpened: boolean;
+  isCompleteTripConfirmationModalOpened: boolean;
 };
 
 type Actions = {
@@ -14,6 +15,7 @@ type Actions = {
   toggleIsUserModalOpened: () => void;
   toggleIsRequestVehicleModalOpened: () => void;
   toggleIsReviewRequestModalOpened: () => void;
+  toggleIsCompleteTripConfirmationModalOpened: () => void;
 };
 
 export const useModalStore = create<States & Actions>((set) => ({
@@ -22,6 +24,7 @@ export const useModalStore = create<States & Actions>((set) => ({
   isUserModalOpened: false,
   isRequestVehicleModalOpened: false,
   isReviewRequestModalOpened: false,
+  isCompleteTripConfirmationModalOpened: false,
 
   toggleIsBranchModalOpened: () =>
     set((state) => ({ isBranchModalOpened: !state.isBranchModalOpened })),
@@ -36,5 +39,10 @@ export const useModalStore = create<States & Actions>((set) => ({
   toggleIsReviewRequestModalOpened: () =>
     set((state) => ({
       isReviewRequestModalOpened: !state.isReviewRequestModalOpened,
+    })),
+  toggleIsCompleteTripConfirmationModalOpened: () =>
+    set((state) => ({
+      isCompleteTripConfirmationModalOpened:
+        !state.isCompleteTripConfirmationModalOpened,
     })),
 }));

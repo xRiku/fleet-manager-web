@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { format } from "date-fns";
+import { translateProgress } from "@/lib/utils";
 
 const mapVariant = (status: string) => {
   switch (status) {
@@ -47,7 +48,7 @@ export default function DriverRequestsTable({
         <TableRow>
           <TableHead className="w-24">Data</TableHead>
           <TableHead className="w-24">Status</TableHead>
-          <TableHead>Progresso</TableHead>
+          <TableHead>Andamento</TableHead>
           {shouldShowDriver && <TableHead>Motorista</TableHead>}
           <TableHead>Carro</TableHead>
           <TableHead>Origem</TableHead>
@@ -65,7 +66,9 @@ export default function DriverRequestsTable({
                 {translateStatus(trip.status)}
               </Badge>
             </TableCell>
-            <TableCell className="font-medium">{trip.progress}</TableCell>
+            <TableCell className="font-medium">
+              {translateProgress(trip.progress)}
+            </TableCell>
             {shouldShowDriver && "driver" in trip && (
               <TableCell className="font-medium">{trip.driver.name}</TableCell>
             )}

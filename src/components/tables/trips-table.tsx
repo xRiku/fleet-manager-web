@@ -10,28 +10,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { format } from "date-fns";
 import ReviewRequestModalTriggerButton from "../buttons/review-request-modal-trigger-button";
-
-const mapVariant = (status: string) => {
-  switch (status) {
-    case "approved":
-      return "success";
-    case "rejected":
-      return "destructive";
-    default:
-      return "inAnalysis";
-  }
-};
-
-const translateStatus = (status: string) => {
-  switch (status) {
-    case "approved":
-      return "Aprovado";
-    case "rejected":
-      return "Recusado";
-    case "inAnalysis":
-      return "Em análise";
-  }
-};
+import { mapVariant, translateStatus, translateProgress } from "@/lib/utils";
 
 export default function TripsTable({
   trips,
@@ -48,7 +27,7 @@ export default function TripsTable({
         <TableRow>
           <TableHead className="w-24">Data</TableHead>
           <TableHead className="w-24">Status</TableHead>
-          <TableHead>Progresso</TableHead>
+          <TableHead>Andamento</TableHead>
           {shouldShowDriver && <TableHead>Motorista</TableHead>}
           <TableHead>Carro</TableHead>
           <TableHead>Origem</TableHead>
@@ -67,7 +46,9 @@ export default function TripsTable({
                 {translateStatus(trip.status)}
               </Badge>
             </TableCell>
-            <TableCell className="font-medium">{trip.progress}</TableCell>
+            <TableCell className="font-medium">
+              {translateProgress(trip.progress)}
+            </TableCell>
             {shouldShowDriver && "driver" in trip && (
               <TableCell className="font-medium">{trip.driver.name}</TableCell>
             )}

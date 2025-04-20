@@ -4,9 +4,8 @@ export type Trip = {
   vehicle: Vehicle;
   origin: Branch;
   destiny: Branch;
-  status: string;
-  odometer?: string;
-  progress?: string;
+  status: Status;
+  progress?: Progress;
   reviewedBy?: string;
   createdAt: string;
   reviewedAt?: string;

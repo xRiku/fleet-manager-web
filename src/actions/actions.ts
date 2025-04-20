@@ -3,7 +3,7 @@
 import { db } from "@/db";
 import { accounts, branches, trips, users, vehicles } from "@/db/schema";
 import { v4 as uuidv4 } from "uuid";
-import { eq } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { Availability, Progress, Status, Vehicle } from "@/types";
 import { auth } from "@/lib/auth"; // path to your Better Auth server instance
@@ -107,6 +107,23 @@ export async function createVehicleRequest(data: {
     ...data,
     driverId: randomDriverId[0].id,
   });
+
+  await db.transaction(async (tx) => {
+    await tx.insert(trips).values({
+      id: uuidv4(),
+      ...data,
+      driverId: randomDriverId[0].id,
+      status: Status.IN_ANALYSIS,
+    });
+    await tx
+      .update(vehicles)
+      .set({
+        availability: Availability.UNAVAILABLE,
+      })
+      .where(eq(vehicles.id, data.vehicleId));
+  });
+
+  revalidatePath("/", "page");
 }
 
 export async function approveRequest(tripId: string) {
@@ -123,22 +140,23 @@ export async function approveRequest(tripId: string) {
     where: eq(users.name, "Philipe Marques"),
   });
 
-  await db
-    .update(trips)
-    .set({
-      reviewedAt: new Date().toISOString(),
-      reviewedBy: user?.id,
-      status: Status.APPROVED,
-      progress: Progress.IN_PROGRESS,
-    })
-    .where(eq(trips.id, trip.id));
-
-  await db
-    .update(vehicles)
-    .set({
-      availability: Availability.UNAVAILABLE,
-    })
-    .where(eq(vehicles.id, trip.vehicleId));
+  await db.transaction(async (tsx) => {
+    await tsx
+      .update(trips)
+      .set({
+        reviewedAt: new Date().toISOString(),
+        reviewedBy: user?.id,
+        status: Status.APPROVED,
+        progress: Progress.IN_PROGRESS,
+      })
+      .where(eq(trips.id, trip.id));
+    await tsx
+      .update(vehicles)
+      .set({
+        availability: Availability.UNAVAILABLE,
+      })
+      .where(eq(vehicles.id, trip.vehicleId));
+  });
 
   revalidatePath("/trips", "page");
 }
@@ -165,6 +183,50 @@ export async function rejectRequest(tripId: string) {
       status: Status.REJECTED,
     })
     .where(eq(trips.id, trip.id));
+
+  revalidatePath("/trips", "page");
+}
+
+export async function finishTrip() {
+  // remove asap when login is ready
+  const user = await db.query.users.findFirst({
+    where: (users, { eq }) => eq(users.name, "Philipe Marques"),
+  });
+
+  if (!user?.id) {
+    throw new Error("User ID is undefined.");
+  }
+
+  await db.transaction(async (tx) => {
+    const [trip] = await tx
+      .update(trips)
+      .set({
+        finishedAt: new Date().toISOString(),
+        progress: Progress.DONE,
+      })
+      .where(
+        and(
+          eq(trips.driverId, user.id),
+          eq(trips.progress, Progress.IN_PROGRESS)
+        )
+      )
+      .returning({
+        vehicleId: trips.vehicleId,
+        destinyId: trips.destinyId,
+      });
+
+    if (!trip) {
+      throw new Error("Trip does not exist or wasn't in progress.");
+    }
+
+    await tx
+      .update(vehicles)
+      .set({
+        availability: Availability.AVAILABLE,
+        branchId: trip.destinyId,
+      })
+      .where(eq(vehicles.id, trip.vehicleId));
+  });
 
   revalidatePath("/trips", "page");
 }
