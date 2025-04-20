@@ -1,16 +1,21 @@
 "use server";
 
 import { db } from "@/db";
-import { branches, trips, users, vehicles } from "@/db/schema";
+import { accounts, branches, trips, users, vehicles } from "@/db/schema";
 import { v4 as uuidv4 } from "uuid";
 import { eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { Availability, Progress, Status, Vehicle } from "@/types";
+import { auth } from "@/lib/auth"; // path to your Better Auth server instance
+import bcrypt from "bcryptjs";
+import { AuthSchema } from "@/lib/validations";
 
 export async function createUser(data: {
   name: string;
   documentNumber: string;
   role: string;
+  email: string;
+  password: string;
 }) {
   const userExists = await db
     .select()
@@ -21,9 +26,30 @@ export async function createUser(data: {
     throw Error("User with the same document number already exists.");
   }
 
+  const userId = uuidv4();
+  const hashedPassword = await bcrypt.hash(data.password, 10);
+
   await db.insert(users).values({
+    hashedPassword: bcrypt.hashSync(data.password, 10),
+    id: userId,
+    createdAt: new Date(),
+    updatedAt: new Date(),
+    email: data.email,
+    emailVerified: true,
+    name: data.name,
+    documentNumber: data.documentNumber,
+    role: data.role,
+    image: null,
+  });
+
+  await db.insert(accounts).values({
     id: uuidv4(),
-    ...data,
+    accountId: data.email,
+    providerId: "email",
+    userId,
+    password: hashedPassword,
+    createdAt: new Date(),
+    updatedAt: new Date(),
   });
 
   revalidatePath("/users", "page");
@@ -143,22 +169,17 @@ export async function rejectRequest(tripId: string) {
   revalidatePath("/trips", "page");
 }
 
-
-// export async function loginRequest(data: {
-//   email: string;
-//   password: string;
-// }) {
-//   const user = await db.query.users.findFirst({
-//     where: eq(users.email, data.email),
-//   });
-
-//   if (!user) {
-//     throw Error("User not found");
-//   }
-
-//   if (user.password !== data.password) {
-//     throw Error("Invalid password");
-//   }
-
-//   return user;
-// }
+export async function logIn(data: AuthSchema) {
+  try {
+    await auth.api.signInEmail({
+      body: {
+        email: data.email,
+        password: data.password
+      },
+      asResponse: true // returns a response object instead of data
+    })
+  }
+  catch (error) {
+    throw error; // nextjs redirects throws error, so we need to rethrow it
+  }
+}

@@ -44,6 +44,18 @@ const createUserSchema = z.object({
     .refine((val) => isValidCPF(val), {
       message: "CPF inválido",
     }),
+  email: z
+    .string()
+    .email({ message: "Email inválido" })
+    .refine((val) => val.trim() !== "", {
+      message: "Email não pode ser vazio",
+    }),
+    password: z
+    .string()
+    .min(6, { message: "Senha deve conter pelo menos 6 caracteres" })
+    .refine((val) => val.trim() !== "", {
+      message: "Senha não pode ser vazia",
+    }),
   role: z.string().refine((role) => role !== "", {
     message: "Escolha um cargo",
   }),
@@ -60,6 +72,8 @@ export function CreateUserDialog() {
       name: "",
       role: "",
       documentNumber: "",
+      email: "",
+      password: "",
     },
   });
 

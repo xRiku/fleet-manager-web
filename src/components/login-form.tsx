@@ -14,42 +14,36 @@ import { Input } from "./ui/input";
 import { useState } from "react";
 import { Eye, EyeSlash } from "@phosphor-icons/react";
 import { Button } from "./ui/button";
+import { logIn } from "@/actions/actions";
 
-const requestLoginScheme = z
+const requestLoginSchema = z
   .object({
     email: z.string().email({ message: "Email inválido" }),
     password: z.string(),
   })
 
-type RequestLoginScheme = z.infer<typeof requestLoginScheme>;
+type RequestLoginSchema = z.infer<typeof requestLoginSchema>;
 
 
 export default function LoginForm() {
   const [isView, setIsView] = useState(false);
 
-  const form = useForm<RequestLoginScheme>({
-    resolver: zodResolver(requestLoginScheme),
+  const form = useForm<RequestLoginSchema>({
+    resolver: zodResolver(requestLoginSchema),
     defaultValues: {
       email: "",
       password: "",
     },
   });
 
-  // const onSubmit = async (data: RequestLoginScheme) => {
-  //     try {
-  //       await loginRequest(data);
-  //       toggleIsRequestVehicleModalOpened();
-  //       form.reset();
-  //     } catch (error) {
-  //       console.error(error);
-  //     }
-  //   };
-
-      
+  const onSubmit = async (data: RequestLoginSchema) => {
+    const response = await logIn(data);
+    console.log(response);
+  }
   return (
     <section className="px-4">
       <Form {...form}>
-        <form onSubmit={form.handleSubmit((data) => console.log(data))}
+        <form onSubmit={form.handleSubmit(onSubmit)}
           className="flex flex-col gap-4"
         >
           <FormField 
@@ -83,7 +77,7 @@ export default function LoginForm() {
                       <Eye
                         className="absolute right-4 top-[10px] z-10 cursor-pointer text-gray-500"
                         onClick={() => {
-                          setIsView(!isView), console.log(isView)
+                          setIsView(!isView);
                         }}
                       />
                     ) : (
@@ -98,7 +92,7 @@ export default function LoginForm() {
               </FormItem>
             )}
           />
-          <Button type="submit" className="my-3">Solicitar</Button>
+          <Button type="submit" className="my-3">Entrar</Button>
         </form>
       </Form>
     </section>
