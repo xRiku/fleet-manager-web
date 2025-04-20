@@ -57,7 +57,6 @@ export const users = sqliteTable("users", {
   email: text("email").notNull(),
   emailVerified: integer('email_verified', { mode: 'boolean' }).notNull(),
   image: text('image'),
-  hashedPassword: text("hashed_password").notNull(),
   createdAt: integer('created_at', { mode: 'timestamp' }).notNull(),
   updatedAt: integer('updated_at', { mode: 'timestamp' }).notNull()
 });

@@ -9,48 +9,33 @@ import { Availability, Progress, Status, Vehicle } from "@/types";
 import { auth } from "@/lib/auth"; // path to your Better Auth server instance
 import bcrypt from "bcryptjs";
 import { AuthSchema } from "@/lib/validations";
+import { redirect } from "next/navigation";
 
-export async function createUser(data: {
+export async function createUser({
+  name,
+  documentNumber,
+  role,
+  email,
+  password
+}: {
   name: string;
   documentNumber: string;
   role: string;
   email: string;
   password: string;
 }) {
-  const userExists = await db
-    .select()
-    .from(users)
-    .where(eq(users.documentNumber, data.documentNumber));
 
-  if (userExists.length) {
-    throw Error("User with the same document number already exists.");
-  }
-
-  const userId = uuidv4();
-  const hashedPassword = await bcrypt.hash(data.password, 10);
-
-  await db.insert(users).values({
-    hashedPassword: bcrypt.hashSync(data.password, 10),
-    id: userId,
-    createdAt: new Date(),
-    updatedAt: new Date(),
-    email: data.email,
-    emailVerified: true,
-    name: data.name,
-    documentNumber: data.documentNumber,
-    role: data.role,
-    image: null,
+  console.log(password, email, name)
+  const data = await auth.api.signUpEmail({
+    body: {
+      name,
+      email,
+      password,
+      documentNumber,
+      role
+    }
   });
-
-  await db.insert(accounts).values({
-    id: uuidv4(),
-    accountId: data.email,
-    providerId: "email",
-    userId,
-    password: hashedPassword,
-    createdAt: new Date(),
-    updatedAt: new Date(),
-  });
+  console.log(data);
 
   revalidatePath("/users", "page");
 }
@@ -233,13 +218,14 @@ export async function finishTrip() {
 
 export async function logIn(data: AuthSchema) {
   try {
-    await auth.api.signInEmail({
+    const user = await auth.api.signInEmail({
       body: {
         email: data.email,
         password: data.password
       },
       asResponse: true // returns a response object instead of data
     })
+    redirect("/users"); // redirect to home page
   }
   catch (error) {
     throw error; // nextjs redirects throws error, so we need to rethrow it

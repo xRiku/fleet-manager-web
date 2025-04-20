@@ -82,16 +82,18 @@ export function CreateUserDialog() {
     try {
       createUser(data);
       toggleIsUserModalOpened();
+      form.reset();
     } catch (error) {
       console.error(error);
     }
   };
 
+
   return (
     <Dialog open={isUserModalOpened} onOpenChange={toggleIsUserModalOpened}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Criar Veículo</DialogTitle>
+          <DialogTitle>Criar Usuário</DialogTitle>
         </DialogHeader>
         <Form {...form}>
           <form
@@ -107,6 +109,20 @@ export function CreateUserDialog() {
                   <FormLabel>Nome completo</FormLabel>
                   <FormControl>
                     <Input placeholder="John Doe" {...field} />
+                  </FormControl>
+
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="email"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Email</FormLabel>
+                  <FormControl>
+                    <Input placeholder="email@email.com" {...field} />
                   </FormControl>
 
                   <FormMessage />
@@ -156,6 +172,22 @@ export function CreateUserDialog() {
                       <SelectItem value={Role.ADMIN}>Gerente</SelectItem>
                     </SelectContent>
                   </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="password"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Senha</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Senha" {...field} 
+                      type="password"/>
+                  </FormControl>
+
                   <FormMessage />
                 </FormItem>
               )}

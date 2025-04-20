@@ -75,7 +75,6 @@ async function seed() {
     emailVerified: false,
     createdAt: new Date(),
     updatedAt: new Date(),
-    hashedPassword: hashedAdminPassword,
     role: Role.ADMIN,
   });
 
@@ -87,7 +86,6 @@ async function seed() {
     emailVerified: true,
     createdAt: new Date(),
     updatedAt: new Date(),
-    hashedPassword: hashedUserPassword,
     role: Role.USER,
   });
 
