@@ -44,6 +44,18 @@ const createUserSchema = z.object({
     .refine((val) => isValidCPF(val), {
       message: "CPF inválido",
     }),
+  email: z
+    .string()
+    .email({ message: "Email inválido" })
+    .refine((val) => val.trim() !== "", {
+      message: "Email não pode ser vazio",
+    }),
+    password: z
+    .string()
+    .min(6, { message: "Senha deve conter pelo menos 6 caracteres" })
+    .refine((val) => val.trim() !== "", {
+      message: "Senha não pode ser vazia",
+    }),
   role: z.string().refine((role) => role !== "", {
     message: "Escolha um cargo",
   }),
@@ -60,6 +72,8 @@ export function CreateUserDialog() {
       name: "",
       role: "",
       documentNumber: "",
+      email: "",
+      password: "",
     },
   });
 
@@ -68,16 +82,18 @@ export function CreateUserDialog() {
     try {
       createUser(data);
       toggleIsUserModalOpened();
+      form.reset();
     } catch (error) {
       console.error(error);
     }
   };
 
+
   return (
     <Dialog open={isUserModalOpened} onOpenChange={toggleIsUserModalOpened}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Criar Veículo</DialogTitle>
+          <DialogTitle>Criar Usuário</DialogTitle>
         </DialogHeader>
         <Form {...form}>
           <form
@@ -93,6 +109,20 @@ export function CreateUserDialog() {
                   <FormLabel>Nome completo</FormLabel>
                   <FormControl>
                     <Input placeholder="John Doe" {...field} />
+                  </FormControl>
+
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="email"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Email</FormLabel>
+                  <FormControl>
+                    <Input placeholder="email@email.com" {...field} />
                   </FormControl>
 
                   <FormMessage />
@@ -142,6 +172,22 @@ export function CreateUserDialog() {
                       <SelectItem value={Role.ADMIN}>Gerente</SelectItem>
                     </SelectContent>
                   </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="password"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Senha</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Senha" {...field} 
+                      type="password"/>
+                  </FormControl>
+
                   <FormMessage />
                 </FormItem>
               )}

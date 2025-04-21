@@ -1,30 +1,41 @@
 "use server";
 
 import { db } from "@/db";
-import { branches, trips, users, vehicles } from "@/db/schema";
+import { accounts, branches, trips, users, vehicles } from "@/db/schema";
 import { v4 as uuidv4 } from "uuid";
 import { and, eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { Availability, Progress, Status, Vehicle } from "@/types";
+import { auth } from "@/lib/auth"; // path to your Better Auth server instance
+import bcrypt from "bcryptjs";
+import { AuthSchema } from "@/lib/validations";
+import { redirect } from "next/navigation";
 
-export async function createUser(data: {
+export async function createUser({
+  name,
+  documentNumber,
+  role,
+  email,
+  password
+}: {
   name: string;
   documentNumber: string;
   role: string;
+  email: string;
+  password: string;
 }) {
-  const userExists = await db
-    .select()
-    .from(users)
-    .where(eq(users.documentNumber, data.documentNumber));
 
-  if (userExists.length) {
-    throw Error("User with the same document number already exists.");
-  }
-
-  await db.insert(users).values({
-    id: uuidv4(),
-    ...data,
+  console.log(password, email, name)
+  const data = await auth.api.signUpEmail({
+    body: {
+      name,
+      email,
+      password,
+      documentNumber,
+      role
+    }
   });
+  console.log(data);
 
   revalidatePath("/users", "page");
 }
@@ -203,4 +214,20 @@ export async function finishTrip() {
   });
 
   revalidatePath("/trips", "page");
+}
+
+export async function logIn(data: AuthSchema) {
+  try {
+    const user = await auth.api.signInEmail({
+      body: {
+        email: data.email,
+        password: data.password
+      },
+      asResponse: true // returns a response object instead of data
+    })
+    redirect("/users"); // redirect to home page
+  }
+  catch (error) {
+    throw error; // nextjs redirects throws error, so we need to rethrow it
+  }
 }
