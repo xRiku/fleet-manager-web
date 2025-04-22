@@ -1,15 +1,15 @@
 "use server";
 
 import { db } from "@/db";
-import { accounts, branches, trips, users, vehicles } from "@/db/schema";
+import { branches, trips, users, vehicles } from "@/db/schema";
 import { v4 as uuidv4 } from "uuid";
 import { and, eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { Availability, Progress, Status, Vehicle } from "@/types";
-import { auth } from "@/lib/auth"; // path to your Better Auth server instance
-import bcrypt from "bcryptjs";
+import { auth } from "@/lib/auth";
 import { AuthSchema } from "@/lib/validations";
 import { redirect } from "next/navigation";
+import { headers } from "next/headers";
 
 export async function createUser({
   name,
@@ -218,7 +218,7 @@ export async function finishTrip() {
 
 export async function logIn(data: AuthSchema) {
   try {
-    const user = await auth.api.signInEmail({
+    await auth.api.signInEmail({
       body: {
         email: data.email,
         password: data.password
@@ -229,5 +229,16 @@ export async function logIn(data: AuthSchema) {
   }
   catch (error) {
     throw error; // nextjs redirects throws error, so we need to rethrow it
+  }
+}
+
+export async function logOut() {
+  try {
+    await auth.api.signOut({
+      headers: await headers(),
+    });
+    redirect("/login");
+  } catch (error) {
+    console.error("Error logging out:", error);
   }
 }

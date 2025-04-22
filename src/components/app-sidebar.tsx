@@ -16,7 +16,6 @@ import { usePathname } from "next/navigation";
 import {
   Car,
   Garage,
-  Gear,
   House,
   Signpost,
   Users,
@@ -48,11 +47,6 @@ const items = [
     title: "Usuários",
     url: "/users",
     icon: Users,
-  },
-  {
-    title: "Settings",
-    url: "#",
-    icon: Gear,
   },
 ];
 
