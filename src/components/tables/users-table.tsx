@@ -16,7 +16,7 @@ export default function UsersTable({ users }: { users: User[] }) {
   return (
     <Table>
       <TableHeader>
-        <TableRow>
+        <TableRow className="text-lg">
           <TableHead>Nome completo</TableHead>
           <TableHead>Cargo</TableHead>
           <TableHead></TableHead>
@@ -27,14 +27,14 @@ export default function UsersTable({ users }: { users: User[] }) {
           <TableRow key={user.id}>
             <TableCell className="font-medium">{user.name}</TableCell>
             <TableCell className="font-medium">
-              <p className="flex items-center gap-2 text-lg">
+              <p className="flex items-center gap-2 ">
                 {user.role === Role.ADMIN ? (
                   <>
-                    <UserGear weight="regular" size={20} /> Gerente
+                    <UserGear weight="bold" size={20} /> Gerente
                   </>
                 ) : (
                   <>
-                    <Driver weight="regular" size={20} /> Motorista
+                    <Driver weight="bold" size={20} /> Motorista
                   </>
                 )}
               </p>

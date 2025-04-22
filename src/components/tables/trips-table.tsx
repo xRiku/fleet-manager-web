@@ -23,7 +23,7 @@ export default function TripsTable({
 
   return (
     <Table>
-      <TableHeader>
+      <TableHeader className="text-lg">
         <TableRow>
           <TableHead className="w-24">Data</TableHead>
           <TableHead className="w-24">Status</TableHead>
@@ -38,7 +38,7 @@ export default function TripsTable({
       <TableBody>
         {trips.map((trip) => (
           <TableRow key={trip.id}>
-            <TableCell className="w-24">
+            <TableCell className="w-24 font-medium">
               {format(new Date(trip.createdAt), "dd/MM/yyyy")}
             </TableCell>
             <TableCell className="w-24 font-medium">
