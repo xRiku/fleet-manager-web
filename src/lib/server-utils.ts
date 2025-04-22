@@ -1,9 +1,12 @@
 "use server-only";
 
 import { db } from "@/db";
-import { branches, trips, users } from "@/db/schema";
+import { branches, trips } from "@/db/schema";
 import { Availability, Progress } from "@/types";
 import { eq } from "drizzle-orm";
+import { auth } from "./auth";
+import { headers } from "next/headers";
+import { redirect } from "next/navigation";
 
 export const getBranches = async () => {
   return await db.select().from(branches);
@@ -43,9 +46,15 @@ export const getTrips = async () => {
 };
 
 export const getVehicleRequestsForDriver = async () => {
-  // Remove after login
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+  if (!session) {
+    redirect("/login");
+  }
+
   const driver = await db.query.users.findFirst({
-    where: (users, { eq }) => eq(users.name, "Philipe Marques"),
+    where: (users, { eq }) => eq(users.id, session.user.id),
   });
 
   if (!driver) {

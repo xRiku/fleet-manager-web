@@ -1,10 +1,25 @@
 import { CompleteTripConfirmationDrawer } from "@/components/complete-trip-confirmation-drawer";
 import Header from "@/components/header";
 import { RequestVehicleDrawer } from "@/components/request-vehicle-drawer";
+import { auth } from "@/lib/auth";
 import { getBranches } from "@/lib/server-utils";
+import { Role } from "@/types";
+import { redirect } from "next/navigation";
+import { headers } from "next/headers";
 
-export default function Layout({ children }: { children: React.ReactNode }) {
+export default async function Layout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const branchesPromise = getBranches();
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+
+  if (session?.user.role === Role.ADMIN) {
+    redirect("/dashboard");
+  }
 
   return (
     <main className="flex flex-col w-full h-dvh">

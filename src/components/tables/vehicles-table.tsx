@@ -1,4 +1,3 @@
-import { Vehicle } from "@/types";
 import {
   Table,
   TableBody,
@@ -8,6 +7,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
+import { getVehicles } from "@/lib/server-utils";
 
 const mapVariant = (availability: string) => {
   switch (availability) {
@@ -26,16 +26,18 @@ const translateAvailability = (availability: string) => {
   }
 };
 
-export default function VehiclesTable({ vehicles }: { vehicles: Vehicle[] }) {
+export default async function VehiclesTable() {
+  const vehicles = await getVehicles();
+
   return (
     <Table>
       <TableHeader>
         <TableRow>
           <TableHead className="w-24">Disponibilidade</TableHead>
+          <TableHead>Placa</TableHead>
           <TableHead>Fabricante</TableHead>
           <TableHead>Modelo</TableHead>
           <TableHead>Cor</TableHead>
-          <TableHead>Placa</TableHead>
           <TableHead>Ano</TableHead>
           <TableHead>Hodômetro</TableHead>
           <TableHead className="text-right">Filial</TableHead>
@@ -49,10 +51,10 @@ export default function VehiclesTable({ vehicles }: { vehicles: Vehicle[] }) {
                 {translateAvailability(vehicle.availability)}
               </Badge>
             </TableCell>
+            <TableCell className="font-medium">{vehicle.plate}</TableCell>
             <TableCell className="font-medium">{vehicle.brand}</TableCell>
             <TableCell className="font-medium">{vehicle.model}</TableCell>
             <TableCell className="font-medium">{vehicle.color}</TableCell>
-            <TableCell className="font-medium">{vehicle.plate}</TableCell>
             <TableCell className="font-medium">{vehicle.year}</TableCell>
             <TableCell className="font-medium">{vehicle.odometer}</TableCell>
             <TableCell className="text-right font-medium">
