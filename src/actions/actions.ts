@@ -1,15 +1,15 @@
 "use server";
 
 import { db } from "@/db";
-import { branches, trips, users, vehicles } from "@/db/schema";
+import { branches, trips, vehicles } from "@/db/schema";
 import { v4 as uuidv4 } from "uuid";
 import { and, eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { Availability, Progress, Status, Vehicle } from "@/types";
 import { auth } from "@/lib/auth";
 import { AuthSchema } from "@/lib/validations";
-import { redirect } from "next/navigation";
 import { headers } from "next/headers";
+import { redirect } from "next/navigation";
 
 export async function createUser({
   name,
@@ -24,7 +24,7 @@ export async function createUser({
   email: string;
   password: string;
 }) {
-  const data = await auth.api.signUpEmail({
+  await auth.api.signUpEmail({
     body: {
       name,
       email,
@@ -33,9 +33,8 @@ export async function createUser({
       role,
     },
   });
-  console.log(data);
 
-  revalidatePath("/users", "layout");
+  revalidatePath("/users", "page");
 }
 
 export async function createBranch(name: string) {
@@ -82,29 +81,35 @@ export async function createVehicleRequest(data: {
   originId: string;
   destinyId: string;
 }) {
-  // Please remove me after login is done
-  const randomDriverId = await db.select().from(users);
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+  if (!session) {
+    redirect("/login");
+  }
+  const driverId = session.user.id;
 
   await db.insert(trips).values({
     id: uuidv4(),
     ...data,
-    driverId: randomDriverId[0].id,
+    driverId,
+    status: Status.IN_ANALYSIS,
   });
 
-  await db.transaction(async (tx) => {
-    await tx.insert(trips).values({
-      id: uuidv4(),
-      ...data,
-      driverId: randomDriverId[0].id,
-      status: Status.IN_ANALYSIS,
-    });
-    await tx
-      .update(vehicles)
-      .set({
-        availability: Availability.UNAVAILABLE,
-      })
-      .where(eq(vehicles.id, data.vehicleId));
-  });
+  // await db.transaction(async (tx) => {
+  //   await tx.insert(trips).values({
+  //     id: uuidv4(),
+  //     ...data,
+  //     driverId: driverId,
+  //     status: Status.IN_ANALYSIS,
+  //   });
+  //   await tx
+  //     .update(vehicles)
+  //     .set({
+  //       availability: Availability.UNAVAILABLE,
+  //     })
+  //     .where(eq(vehicles.id, data.vehicleId));
+  // });
 
   revalidatePath("/", "page");
 }
@@ -118,17 +123,20 @@ export async function approveRequest(tripId: string) {
     throw Error("Invalid tripId");
   }
 
-  // remove after login
-  const user = await db.query.users.findFirst({
-    where: eq(users.name, "Philipe Marques"),
+  const session = await auth.api.getSession({
+    headers: await headers(),
   });
+  if (!session) {
+    redirect("/login");
+  }
+  const userId = session.user.id;
 
   await db.transaction(async (tsx) => {
     await tsx
       .update(trips)
       .set({
         reviewedAt: new Date().toISOString(),
-        reviewedBy: user?.id,
+        reviewedBy: userId,
         status: Status.APPROVED,
         progress: Progress.IN_PROGRESS,
       })
@@ -139,6 +147,20 @@ export async function approveRequest(tripId: string) {
         availability: Availability.UNAVAILABLE,
       })
       .where(eq(vehicles.id, trip.vehicleId));
+
+    await tsx
+      .update(trips)
+      .set({
+        reviewedAt: new Date().toISOString(),
+        reviewedBy: userId,
+        status: Status.REJECTED,
+      })
+      .where(
+        and(
+          eq(trips.vehicleId, trip.vehicleId),
+          eq(trips.status, Status.IN_ANALYSIS)
+        )
+      );
   });
 
   revalidatePath("/trips", "page");
@@ -153,16 +175,19 @@ export async function rejectRequest(tripId: string) {
     throw Error("Invalid tripId");
   }
 
-  // remove after login
-  const user = await db.query.users.findFirst({
-    where: eq(users.name, "Philipe Marques"),
+  const session = await auth.api.getSession({
+    headers: await headers(),
   });
+  if (!session) {
+    redirect("/login");
+  }
+  const userId = session.user.id;
 
   await db
     .update(trips)
     .set({
       reviewedAt: new Date().toISOString(),
-      reviewedBy: user?.id,
+      reviewedBy: userId,
       status: Status.REJECTED,
     })
     .where(eq(trips.id, trip.id));
@@ -171,12 +196,15 @@ export async function rejectRequest(tripId: string) {
 }
 
 export async function finishTrip() {
-  // remove asap when login is ready
-  const user = await db.query.users.findFirst({
-    where: (users, { eq }) => eq(users.name, "Philipe Marques"),
+  const session = await auth.api.getSession({
+    headers: await headers(),
   });
+  if (!session) {
+    redirect("/login");
+  }
+  const userId = session.user.id;
 
-  if (!user?.id) {
+  if (!userId) {
     throw new Error("User ID is undefined.");
   }
 
@@ -189,7 +217,7 @@ export async function finishTrip() {
       })
       .where(
         and(
-          eq(trips.driverId, user.id),
+          eq(trips.driverId, userId),
           eq(trips.progress, Progress.IN_PROGRESS)
         )
       )
@@ -221,11 +249,10 @@ export async function logIn(data: AuthSchema) {
         email: data.email,
         password: data.password,
       },
-      asResponse: true, // returns a response object instead of data
+      asResponse: true,
     });
-    redirect("/users"); // redirect to home page
   } catch (error) {
-    throw error; // nextjs redirects throws error, so we need to rethrow it
+    throw error;
   }
 }
 

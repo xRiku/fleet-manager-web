@@ -15,19 +15,18 @@ import { useState } from "react";
 import { Eye, EyeSlash } from "@phosphor-icons/react";
 import { Button } from "./ui/button";
 import { logIn } from "@/actions/actions";
+import { useRouter } from "next/navigation";
 
-const requestLoginSchema = z
-  .object({
-    email: z.string().email({ message: "Email inválido" }),
-    password: z.string(),
-  })
+const requestLoginSchema = z.object({
+  email: z.string().email({ message: "Email inválido" }),
+  password: z.string(),
+});
 
 type RequestLoginSchema = z.infer<typeof requestLoginSchema>;
 
-
 export default function LoginForm() {
-  
   const [isView, setIsView] = useState(false);
+  const router = useRouter();
 
   const form = useForm<RequestLoginSchema>({
     resolver: zodResolver(requestLoginSchema),
@@ -38,15 +37,16 @@ export default function LoginForm() {
   });
 
   const onSubmit = async (data: RequestLoginSchema) => {
-    const response = await logIn(data);
-    console.log(response);
-  }
+    await logIn(data);
+    router.refresh();
+  };
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)}
+      <form
+        onSubmit={form.handleSubmit(onSubmit)}
         className="flex flex-col gap-4 px-4"
       >
-        <FormField 
+        <FormField
           control={form.control}
           name="email"
           render={({ field }) => (
@@ -60,7 +60,7 @@ export default function LoginForm() {
           )}
         />
 
-        <FormField 
+        <FormField
           control={form.control}
           name="password"
           render={({ field }) => (
@@ -68,9 +68,9 @@ export default function LoginForm() {
               <FormLabel>Senha</FormLabel>
               <FormControl>
                 <div className="relative">
-                  <Input 
+                  <Input
                     type={isView ? "text" : "password"}
-                    placeholder="Senha" 
+                    placeholder="Senha"
                     {...field}
                   />
                   {isView ? (
@@ -92,7 +92,9 @@ export default function LoginForm() {
             </FormItem>
           )}
         />
-        <Button type="submit" className="my-3">Entrar</Button>
+        <Button type="submit" className="my-3">
+          Entrar
+        </Button>
       </form>
     </Form>
   );

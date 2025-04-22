@@ -1,4 +1,4 @@
-import { Status, Trip } from "@/types";
+import { Status } from "@/types";
 import {
   Table,
   TableBody,
@@ -11,15 +11,10 @@ import { Badge } from "@/components/ui/badge";
 import { format } from "date-fns";
 import ReviewRequestModalTriggerButton from "../buttons/review-request-modal-trigger-button";
 import { mapVariant, translateStatus, translateProgress } from "@/lib/utils";
+import { getTrips } from "@/lib/server-utils";
 
-export default function TripsTable({
-  trips,
-}: {
-  trips: Trip[] | Omit<Trip, "driver">[];
-}) {
-  const shouldShowDriver: boolean =
-    trips instanceof Array &&
-    trips.every((trip): trip is Trip => "driver" in trip);
+export default async function TripsTable() {
+  const trips = await getTrips();
 
   return (
     <Table>
@@ -28,7 +23,7 @@ export default function TripsTable({
           <TableHead className="w-24">Data</TableHead>
           <TableHead className="w-24">Status</TableHead>
           <TableHead>Andamento</TableHead>
-          {shouldShowDriver && <TableHead>Motorista</TableHead>}
+          <TableHead>Motorista</TableHead>
           <TableHead>Carro</TableHead>
           <TableHead>Origem</TableHead>
           <TableHead>Destino</TableHead>
@@ -47,11 +42,9 @@ export default function TripsTable({
               </Badge>
             </TableCell>
             <TableCell className="font-medium">
-              {translateProgress(trip.progress)}
+              {trip.progress && translateProgress(trip.progress)}
             </TableCell>
-            {shouldShowDriver && "driver" in trip && (
-              <TableCell className="font-medium">{trip.driver.name}</TableCell>
-            )}
+            <TableCell className="font-medium">{trip.driver.name}</TableCell>
             <TableCell className="font-medium">{`${trip.vehicle.brand} ${trip.vehicle.model} ${trip.vehicle.color} - ${trip.vehicle.plate}`}</TableCell>
             <TableCell className="font-medium">{trip.origin.name}</TableCell>
             <TableCell className="font-medium">{trip.destiny.name}</TableCell>

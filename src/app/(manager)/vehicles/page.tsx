@@ -1,11 +1,11 @@
 import VehiclesModalTriggerButton from "@/components/buttons/vehicles-modal-trigger-button";
 import { VehicleDialog } from "@/components/dialogs/vehicle-dialog";
+import { GenericSkeleton } from "@/components/generic-skeleton";
 import VehiclesTable from "@/components/tables/vehicles-table";
-import { getBranches, getVehicles } from "@/lib/server-utils";
+import { getBranches } from "@/lib/server-utils";
 import { Suspense } from "react";
 
-export default async function Page() {
-  const vehicles = await getVehicles();
+export default function Page() {
   const branches = getBranches();
 
   return (
@@ -14,7 +14,9 @@ export default async function Page() {
         <h1 className="text-xl font-semibold mb-6">Veículos</h1>
         <VehiclesModalTriggerButton />
       </div>
-      <VehiclesTable vehicles={vehicles} />
+      <Suspense key={"vehicles"} fallback={<GenericSkeleton />}>
+        <VehiclesTable />
+      </Suspense>
 
       <Suspense fallback="Loading ...">
         <VehicleDialog branchesPromise={branches} />

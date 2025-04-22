@@ -25,7 +25,10 @@ export default async function Page() {
   }));
 
   return (
-    <Tabs defaultValue="current-trip" className="w-full h-full">
+    <Tabs
+      defaultValue={currentTrip ? "current-trip" : "requests"}
+      className="w-full h-full"
+    >
       <TabsList className="grid w-full grid-cols-2">
         <TabsTrigger value="current-trip">Viagem atual</TabsTrigger>
         <TabsTrigger value="requests">Solicitações</TabsTrigger>

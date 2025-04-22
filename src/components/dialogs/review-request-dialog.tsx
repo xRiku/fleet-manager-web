@@ -52,7 +52,11 @@ export function ReviewRequestDialog() {
         </DialogHeader>
         <div className="flex flex-col py-4">{`id: ${selectedTripId}`}</div>
         <DialogFooter>
-          <Button variant="secondary" onClick={handleRejectClick}>
+          <Button
+            variant="secondary"
+            onClick={handleRejectClick}
+            className="cursor-pointer"
+          >
             Recusar
           </Button>
           <Button onClick={handleApproveClick} className="cursor-pointer">
