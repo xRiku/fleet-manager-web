@@ -16,7 +16,7 @@ export async function createUser({
   documentNumber,
   role,
   email,
-  password
+  password,
 }: {
   name: string;
   documentNumber: string;
@@ -24,20 +24,18 @@ export async function createUser({
   email: string;
   password: string;
 }) {
-
-  console.log(password, email, name)
   const data = await auth.api.signUpEmail({
     body: {
       name,
       email,
       password,
       documentNumber,
-      role
-    }
+      role,
+    },
   });
   console.log(data);
 
-  revalidatePath("/users", "page");
+  revalidatePath("/users", "layout");
 }
 
 export async function createBranch(name: string) {
@@ -221,13 +219,12 @@ export async function logIn(data: AuthSchema) {
     await auth.api.signInEmail({
       body: {
         email: data.email,
-        password: data.password
+        password: data.password,
       },
-      asResponse: true // returns a response object instead of data
-    })
+      asResponse: true, // returns a response object instead of data
+    });
     redirect("/users"); // redirect to home page
-  }
-  catch (error) {
+  } catch (error) {
     throw error; // nextjs redirects throws error, so we need to rethrow it
   }
 }
@@ -237,7 +234,6 @@ export async function logOut() {
     await auth.api.signOut({
       headers: await headers(),
     });
-    redirect("/login");
   } catch (error) {
     console.error("Error logging out:", error);
   }
