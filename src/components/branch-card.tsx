@@ -13,7 +13,6 @@ import { Garage } from "@phosphor-icons/react";
 export default function BranchCard({branch}: {branch: Branch}) {
   const [availableVehicles, setAvailableVehicles] = useState<Vehicle[]>([]);
   const [unavailableVehicles, setUnavailableVehicles] = useState<Vehicle[]>([]);
-  const [isLoadingVehicles, setIsLoadingVehicles] = useState(true);
 
   useEffect(() => {
       async function asyncFunction() {
@@ -24,8 +23,6 @@ export default function BranchCard({branch}: {branch: Branch}) {
         setUnavailableVehicles(parsedFetchedVehicles.filter((vehicle: Vehicle) => vehicle.availability !== "available"));
       } catch (error) {
         console.error(error);
-      } finally {
-        setIsLoadingVehicles(false);
       }
     }
     asyncFunction();
