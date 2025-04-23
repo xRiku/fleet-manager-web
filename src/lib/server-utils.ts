@@ -77,9 +77,16 @@ export const getUsers = async () => {
 };
 
 export const getCurrentTripForDriver = async () => {
+
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+  if (!session) {
+    redirect("/login");
+  }
   // remove
   const driver = await db.query.users.findFirst({
-    where: (users, { eq }) => eq(users.name, "Philipe Marques"),
+    where: (users, { eq }) => eq(users.id, session.user.id),
   });
 
   if (!driver) {
@@ -99,3 +106,21 @@ export const getCurrentTripForDriver = async () => {
       ),
   });
 };
+
+export const getTripById = async (tripId: string) => {
+  const trip = await db.query.trips.findFirst({
+    where: (trips, { eq }) => eq(trips.id, tripId),
+    with: {
+      destiny: true,
+      vehicle: true,
+      origin: true,
+      driver: true,
+    },
+  });
+
+  if (!trip) {
+    throw new Error("Trip not found");
+  }
+
+  return trip;
+}

@@ -24,9 +24,9 @@ export default function UsersTable({ users }: { users: User[] }) {
       </TableHeader>
       <TableBody>
         {users.map((user) => (
-          <TableRow key={user.id}>
-            <TableCell className="font-medium">{user.name}</TableCell>
-            <TableCell className="font-medium">
+          <TableRow key={user.id} className="font-medium">
+            <TableCell>{user.name}</TableCell>
+            <TableCell>
               <p className="flex items-center gap-2 ">
                 {user.role === Role.ADMIN ? (
                   <>
@@ -39,7 +39,7 @@ export default function UsersTable({ users }: { users: User[] }) {
                 )}
               </p>
             </TableCell>
-            <TableCell className="font-medium"></TableCell>
+            <TableCell></TableCell>
           </TableRow>
         ))}
       </TableBody>

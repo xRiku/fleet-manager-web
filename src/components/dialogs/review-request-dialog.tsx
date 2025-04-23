@@ -11,11 +11,36 @@ import { useModalStore } from "@/stores/modal-store";
 import { Button } from "../ui/button";
 import { approveRequest, rejectRequest } from "@/actions/actions";
 import { useQueryState } from "nuqs";
+import { useEffect, useState } from "react";
+import { Trip } from "@/types";
 
 export function ReviewRequestDialog() {
   const { isReviewRequestModalOpened, toggleIsReviewRequestModalOpened } =
     useModalStore();
   const [selectedTripId, setSelectedTripId] = useQueryState("id");
+  const [isLoadingTrip, setIsLoadingTrip] = useState(false);
+  const [trip, setTrip] = useState<Trip | null>(null);
+
+  useEffect(() => {
+    if(!selectedTripId) {
+      return;
+    }
+    async function asyncFunction() {
+      setIsLoadingTrip(true);
+      try {
+        const fetchedTrip = await fetch(`/api/trips/${selectedTripId}`);
+        const parsedTrip = await fetchedTrip.json();
+        console.log(parsedTrip);
+        setTrip(parsedTrip);
+      } catch (error) {
+        console.error(error);
+      }
+      finally {
+        setIsLoadingTrip(false);
+      }
+    }
+    asyncFunction();
+  }, [selectedTripId, isReviewRequestModalOpened]);
 
   const handleApproveClick = async () => {
     if (selectedTripId) {
@@ -50,7 +75,41 @@ export function ReviewRequestDialog() {
         <DialogHeader>
           <DialogTitle>Revisar solicitação</DialogTitle>
         </DialogHeader>
-        <div className="flex flex-col py-4">{`id: ${selectedTripId}`}</div>
+        <div className="flex flex-col gap-2 ">
+          <p>
+            <strong>Solicitante:</strong> {trip?.driver.name}
+          </p>
+          <p>
+            <strong>Origem:</strong> {trip?.origin.name}
+          </p>
+          <p>
+            <strong>Destino:</strong> {trip?.destiny.name}
+          </p>
+          <section className="flex flex-col gap-2">
+            <p>
+              <strong>Informações do veículo:</strong>
+            </p>
+            <p className="text-sm">
+              &nbsp; <strong>Marca:</strong> {trip?.vehicle.brand}
+            </p>
+            <p className="text-sm">
+              &nbsp; <strong>Modelo:</strong> {trip?.vehicle.model}
+            </p>
+            <p className="text-sm">
+              &nbsp; <strong>Cor:</strong> {trip?.vehicle.color}
+            </p>
+            <p className="text-sm">
+              &nbsp; <strong>Placa:</strong> {trip?.vehicle.plate}
+            </p>
+            <p className="text-sm">
+              &nbsp; <strong>Ano:</strong> {trip?.vehicle.year}
+            </p>
+            <p className="text-sm">
+              &nbsp; <strong>Quilometragem:</strong> {trip?.vehicle.odometer} km
+            </p>
+          </section>
+          
+        </div>
         <DialogFooter>
           <Button
             variant="secondary"

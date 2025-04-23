@@ -45,7 +45,7 @@ export default function DriverRequestsTable({
   return (
     <Table>
       <TableHeader>
-        <TableRow>
+        <TableRow className="text-lg">
           <TableHead className="w-24">Data</TableHead>
           <TableHead className="w-24">Status</TableHead>
           <TableHead>Andamento</TableHead>
@@ -57,24 +57,24 @@ export default function DriverRequestsTable({
       </TableHeader>
       <TableBody>
         {trips.map((trip) => (
-          <TableRow key={trip.id}>
+          <TableRow key={trip.id} className="font-medium">
             <TableCell className="w-24">
               {format(new Date(trip.createdAt), "dd/MM/yyyy")}
             </TableCell>
-            <TableCell className="w-24 font-medium">
+            <TableCell className="w-24">
               <Badge variant={mapVariant(trip.status)}>
                 {translateStatus(trip.status)}
               </Badge>
             </TableCell>
-            <TableCell className="font-medium">
+            <TableCell>
               {translateProgress(trip.progress)}
             </TableCell>
             {shouldShowDriver && "driver" in trip && (
-              <TableCell className="font-medium">{trip.driver.name}</TableCell>
+              <TableCell>{trip.driver.name}</TableCell>
             )}
-            <TableCell className="font-medium">{`${trip.vehicle.brand} ${trip.vehicle.model} ${trip.vehicle.color} - ${trip.vehicle.plate}`}</TableCell>
-            <TableCell className="font-medium">{trip.origin.name}</TableCell>
-            <TableCell className="font-medium">{trip.destiny.name}</TableCell>
+            <TableCell>{`${trip.vehicle.brand} ${trip.vehicle.model} ${trip.vehicle.color} - ${trip.vehicle.plate}`}</TableCell>
+            <TableCell>{trip.origin.name}</TableCell>
+            <TableCell>{trip.destiny.name}</TableCell>
           </TableRow>
         ))}
       </TableBody>

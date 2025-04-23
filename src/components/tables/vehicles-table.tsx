@@ -32,8 +32,8 @@ export default async function VehiclesTable() {
   return (
     <Table>
       <TableHeader>
-        <TableRow>
-          <TableHead className="w-24">Disponibilidade</TableHead>
+        <TableRow className="text-lg">
+          <TableHead className="w-24 ">Disponibilidade</TableHead>
           <TableHead>Placa</TableHead>
           <TableHead>Fabricante</TableHead>
           <TableHead>Modelo</TableHead>
@@ -45,19 +45,19 @@ export default async function VehiclesTable() {
       </TableHeader>
       <TableBody>
         {vehicles.map((vehicle) => (
-          <TableRow key={vehicle.id}>
+          <TableRow key={vehicle.id} className="font-medium">
             <TableCell className="w-24">
               <Badge variant={mapVariant(vehicle.availability)}>
                 {translateAvailability(vehicle.availability)}
               </Badge>
             </TableCell>
-            <TableCell className="font-medium">{vehicle.plate}</TableCell>
-            <TableCell className="font-medium">{vehicle.brand}</TableCell>
-            <TableCell className="font-medium">{vehicle.model}</TableCell>
-            <TableCell className="font-medium">{vehicle.color}</TableCell>
-            <TableCell className="font-medium">{vehicle.year}</TableCell>
-            <TableCell className="font-medium">{vehicle.odometer}</TableCell>
-            <TableCell className="text-right font-medium">
+            <TableCell>{vehicle.plate}</TableCell>
+            <TableCell>{vehicle.brand}</TableCell>
+            <TableCell>{vehicle.model}</TableCell>
+            <TableCell>{vehicle.color}</TableCell>
+            <TableCell>{vehicle.year}</TableCell>
+            <TableCell>{vehicle.odometer}</TableCell>
+            <TableCell className="text-right">
               {vehicle.branch?.name}
             </TableCell>
           </TableRow>
