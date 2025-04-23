@@ -12,13 +12,14 @@ export default function ReviewRequestModalTriggerButton({
   tripId: string;
 }) {
   const { toggleIsReviewRequestModalOpened } = useModalStore();
-  const [selectedTripId, setSelectedTripId] = useQueryState("id", {
+  const [_, setSelectedTripId] = useQueryState("id", {
     defaultValue: "",
   });
 
   const handleClick = async () => {
     setSelectedTripId(tripId);
     toggleIsReviewRequestModalOpened();
+    console.log(_);
   };
 
   return (

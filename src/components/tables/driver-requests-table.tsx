@@ -1,4 +1,3 @@
-import { Trip } from "@/types";
 import {
   Table,
   TableBody,
@@ -10,6 +9,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { format } from "date-fns";
 import { translateProgress } from "@/lib/utils";
+import { TripWithRelations } from "@/db/schema";
 
 const mapVariant = (status: string) => {
   switch (status) {
@@ -36,12 +36,8 @@ const translateStatus = (status: string) => {
 export default function DriverRequestsTable({
   trips,
 }: {
-  trips: Trip[] | Omit<Trip, "driver">[];
+  trips: TripWithRelations[];
 }) {
-  const shouldShowDriver: boolean =
-    trips instanceof Array &&
-    trips.every((trip): trip is Trip => "driver" in trip);
-
   return (
     <Table>
       <TableHeader>
@@ -49,7 +45,6 @@ export default function DriverRequestsTable({
           <TableHead className="w-24">Data</TableHead>
           <TableHead className="w-24">Status</TableHead>
           <TableHead>Andamento</TableHead>
-          {shouldShowDriver && <TableHead>Motorista</TableHead>}
           <TableHead>Carro</TableHead>
           <TableHead>Origem</TableHead>
           <TableHead>Destino</TableHead>
@@ -67,14 +62,11 @@ export default function DriverRequestsTable({
               </Badge>
             </TableCell>
             <TableCell>
-              {translateProgress(trip.progress)}
+              {trip.progress ? translateProgress(trip.progress) : undefined}
             </TableCell>
-            {shouldShowDriver && "driver" in trip && (
-              <TableCell>{trip.driver.name}</TableCell>
-            )}
-            <TableCell>{`${trip.vehicle.brand} ${trip.vehicle.model} ${trip.vehicle.color} - ${trip.vehicle.plate}`}</TableCell>
-            <TableCell>{trip.origin.name}</TableCell>
-            <TableCell>{trip.destiny.name}</TableCell>
+            <TableCell>{`${trip.vehicle?.brand} ${trip.vehicle?.model} ${trip.vehicle?.color} - ${trip.vehicle?.plate}`}</TableCell>
+            <TableCell>{trip.origin?.name}</TableCell>
+            <TableCell>{trip.destiny?.name}</TableCell>
           </TableRow>
         ))}
       </TableBody>

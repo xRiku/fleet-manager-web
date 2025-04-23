@@ -18,15 +18,13 @@ export function ReviewRequestDialog() {
   const { isReviewRequestModalOpened, toggleIsReviewRequestModalOpened } =
     useModalStore();
   const [selectedTripId, setSelectedTripId] = useQueryState("id");
-  const [isLoadingTrip, setIsLoadingTrip] = useState(false);
   const [trip, setTrip] = useState<Trip | null>(null);
 
   useEffect(() => {
-    if(!selectedTripId) {
+    if (!selectedTripId) {
       return;
     }
     async function asyncFunction() {
-      setIsLoadingTrip(true);
       try {
         const fetchedTrip = await fetch(`/api/trips/${selectedTripId}`);
         const parsedTrip = await fetchedTrip.json();
@@ -34,9 +32,7 @@ export function ReviewRequestDialog() {
         setTrip(parsedTrip);
       } catch (error) {
         console.error(error);
-      }
-      finally {
-        setIsLoadingTrip(false);
+      } finally {
       }
     }
     asyncFunction();
@@ -108,7 +104,6 @@ export function ReviewRequestDialog() {
               &nbsp; <strong>Quilometragem:</strong> {trip?.vehicle.odometer} km
             </p>
           </section>
-          
         </div>
         <DialogFooter>
           <Button

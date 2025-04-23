@@ -17,13 +17,6 @@ export default async function Page() {
     return <VehicleRequestsEmptyState />;
   }
 
-  const trips = requests.map((request) => ({
-    ...request,
-    progress: request.progress ?? undefined, // Map null to undefined for compatibility
-    reviewedBy: request.reviewedBy ?? undefined, // Map null to undefined for compatibility
-    reviewedAt: request.reviewedAt ?? undefined, // Map null to undefined for compatibility
-  }));
-
   return (
     <Tabs
       defaultValue={currentTrip ? "current-trip" : "requests"}
@@ -62,7 +55,7 @@ export default async function Page() {
       </TabsContent>
       <TabsContent value="requests">
         <div className="flex flex-col gap-4 h-full">
-          <DriverRequestsTable trips={trips} />
+          <DriverRequestsTable trips={requests} />
           <div className="mt-auto">
             <TripsModalTriggerButton />
           </div>

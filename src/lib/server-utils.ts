@@ -77,14 +77,13 @@ export const getUsers = async () => {
 };
 
 export const getCurrentTripForDriver = async () => {
-
   const session = await auth.api.getSession({
     headers: await headers(),
   });
   if (!session) {
     redirect("/login");
   }
-  // remove
+
   const driver = await db.query.users.findFirst({
     where: (users, { eq }) => eq(users.id, session.user.id),
   });
@@ -123,4 +122,4 @@ export const getTripById = async (tripId: string) => {
   }
 
   return trip;
-}
+};
