@@ -45,11 +45,12 @@ export default async function Page() {
                 </span>
                 <span className="inline-flex items-center gap-2">
                   <MapPin weight="duotone" />
-                  Origem
+                  Origem: {currentTrip?.origin.name}
                 </span>
               </div>
               <span className="inline-flex items-center gap-2">
-                <FlagBannerFold weight="duotone" /> Destino
+                <FlagBannerFold weight="duotone" />
+                Destino: {currentTrip?.destiny.name}
               </span>
             </div>
 
