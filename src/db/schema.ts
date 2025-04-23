@@ -1,35 +1,30 @@
 import { relations } from "drizzle-orm";
-import { text, int, sqliteTable, integer } from "drizzle-orm/sqlite-core";
-import { sql } from "drizzle-orm";
+import { text, integer, timestamp, pgTable } from "drizzle-orm/pg-core";
 import { Status } from "@/types";
 
-export const branches = sqliteTable("branches", {
+export const branches = pgTable("branches", {
   id: text("id").primaryKey(),
   name: text("name").notNull(),
-  createdAt: text("created_at")
-    .notNull()
-    .default(sql`CURRENT_TIMESTAMP`),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
 });
 
-export const vehicles = sqliteTable("vehicles", {
+export const vehicles = pgTable("vehicles", {
   id: text("id").primaryKey(),
 
   plate: text("plate").notNull().unique(),
   color: text("color").notNull(),
-  year: int().notNull(),
+  year: integer("year").notNull(),
   model: text("model").notNull(),
   brand: text("brand").notNull(),
-  odometer: int().notNull(),
+  odometer: integer("odometer").notNull(),
   availability: text("availability").notNull(),
 
   branchId: text("branch_id").notNull(),
 
-  createdAt: text("created_at")
-    .notNull()
-    .default(sql`CURRENT_TIMESTAMP`),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
 });
 
-export const trips = sqliteTable("trips", {
+export const trips = pgTable("trips", {
   id: text("id").primaryKey(),
   status: text("status").notNull().default(Status.IN_ANALYSIS),
   progress: text("progress"),
@@ -39,26 +34,24 @@ export const trips = sqliteTable("trips", {
   destinyId: text("destiny_id").notNull(),
   vehicleId: text("vehicle_id").notNull(),
 
-  reviewedAt: text("reviewed_at"),
+  reviewedAt: timestamp("reviewed_at"),
   reviewedBy: text("reviewed_by"),
-  finishedAt: text("finished_at"),
+  finishedAt: timestamp("finished_at"),
 
-  createdAt: text("created_at")
-    .notNull()
-    .default(sql`CURRENT_TIMESTAMP`),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
 });
 
-export const users = sqliteTable("users", {
+export const users = pgTable("users", {
   id: text("id").primaryKey(),
 
   name: text("name").notNull(),
   documentNumber: text("document_number").notNull().unique(),
   role: text("role").notNull(),
   email: text("email").notNull(),
-  emailVerified: integer('email_verified', { mode: 'boolean' }).notNull(),
-  image: text('image'),
-  createdAt: integer('created_at', { mode: 'timestamp' }).notNull(),
-  updatedAt: integer('updated_at', { mode: 'timestamp' }).notNull()
+  emailVerified: integer("email_verified").notNull(),
+  image: text("image"),
+  createdAt: timestamp("created_at").notNull(),
+  updatedAt: timestamp("updated_at").notNull(),
 });
 
 export const branchesRelations = relations(branches, ({ many }) => ({
@@ -99,39 +92,67 @@ export const vehiclesRelations = relations(vehicles, ({ one, many }) => ({
   trips: many(trips),
 }));
 
-
-export const sessions = sqliteTable("sessions", {
-  id: text('id').primaryKey(),
-  expiresAt: integer('expires_at', { mode: 'timestamp' }).notNull(),
-token: text('token').notNull().unique(),
-createdAt: integer('created_at', { mode: 'timestamp' }).notNull(),
-updatedAt: integer('updated_at', { mode: 'timestamp' }).notNull(),
-ipAddress: text('ip_address'),
-userAgent: text('user_agent'),
-userId: text('user_id').notNull().references(()=> users.id, { onDelete: 'cascade' })
+export const sessions = pgTable("sessions", {
+  id: text("id").primaryKey(),
+  expiresAt: timestamp("expires_at").notNull(),
+  token: text("token").notNull().unique(),
+  createdAt: timestamp("created_at").notNull(),
+  updatedAt: timestamp("updated_at").notNull(),
+  ipAddress: text("ip_address"),
+  userAgent: text("user_agent"),
+  userId: text("user_id")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }),
 });
 
-export const accounts = sqliteTable("accounts", {
-  id: text('id').primaryKey(),
-  accountId: text('account_id').notNull(),
-  providerId: text('provider_id').notNull(),
-  userId: text('user_id').notNull().references(()=> users.id, { onDelete: 'cascade' }),
-  accessToken: text('access_token'),
-  refreshToken: text('refresh_token'),
-  idToken: text('id_token'),
-  accessTokenExpiresAt: integer('access_token_expires_at', { mode: 'timestamp' }),
-  refreshTokenExpiresAt: integer('refresh_token_expires_at', { mode: 'timestamp' }),
-  scope: text('scope'),
-  password: text('password'),
-  createdAt: integer('created_at', { mode: 'timestamp' }).notNull(),
-  updatedAt: integer('updated_at', { mode: 'timestamp' }).notNull()
+export const accounts = pgTable("accounts", {
+  id: text("id").primaryKey(),
+  accountId: text("account_id").notNull(),
+  providerId: text("provider_id").notNull(),
+  userId: text("user_id")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }),
+  accessToken: text("access_token"),
+  refreshToken: text("refresh_token"),
+  idToken: text("id_token"),
+  accessTokenExpiresAt: timestamp("access_token_expires_at"),
+  refreshTokenExpiresAt: timestamp("refresh_token_expires_at"),
+  scope: text("scope"),
+  password: text("password"),
+  createdAt: timestamp("created_at").notNull(),
+  updatedAt: timestamp("updated_at").notNull(),
 });
 
-export const verifications = sqliteTable("verifications", {
-  id: text('id').primaryKey(),
-  identifier: text('identifier').notNull(),
-  value: text('value').notNull(),
-  expiresAt: integer('expires_at', { mode: 'timestamp' }).notNull(),
-  createdAt: integer('created_at', { mode: 'timestamp' }),
-  updatedAt: integer('updated_at', { mode: 'timestamp' })
+export const verifications = pgTable("verifications", {
+  id: text("id").primaryKey(),
+  identifier: text("identifier").notNull(),
+  value: text("value").notNull(),
+  expiresAt: timestamp("expires_at").notNull(),
+  createdAt: timestamp("created_at"),
+  updatedAt: timestamp("updated_at"),
 });
+
+// Select (read) types
+export type Branch = typeof branches.$inferSelect;
+export type Vehicle = typeof vehicles.$inferSelect;
+export type Trip = typeof trips.$inferSelect;
+export type User = typeof users.$inferSelect;
+export type Session = typeof sessions.$inferSelect;
+export type Account = typeof accounts.$inferSelect;
+export type Verification = typeof verifications.$inferSelect;
+
+// Insert (create) types
+export type NewBranch = typeof branches.$inferInsert;
+export type NewVehicle = typeof vehicles.$inferInsert;
+export type NewTrip = typeof trips.$inferInsert;
+export type NewUser = typeof users.$inferInsert;
+export type NewSession = typeof sessions.$inferInsert;
+export type NewAccount = typeof accounts.$inferInsert;
+export type NewVerification = typeof verifications.$inferInsert;
+
+export type TripWithRelations = Trip & {
+  origin?: typeof branches.$inferSelect;
+  destiny?: typeof branches.$inferSelect;
+  vehicle?: typeof vehicles.$inferSelect;
+  driver?: typeof users.$inferSelect;
+};

@@ -96,21 +96,6 @@ export async function createVehicleRequest(data: {
     status: Status.IN_ANALYSIS,
   });
 
-  // await db.transaction(async (tx) => {
-  //   await tx.insert(trips).values({
-  //     id: uuidv4(),
-  //     ...data,
-  //     driverId: driverId,
-  //     status: Status.IN_ANALYSIS,
-  //   });
-  //   await tx
-  //     .update(vehicles)
-  //     .set({
-  //       availability: Availability.UNAVAILABLE,
-  //     })
-  //     .where(eq(vehicles.id, data.vehicleId));
-  // });
-
   revalidatePath("/", "page");
 }
 
@@ -135,12 +120,13 @@ export async function approveRequest(tripId: string) {
     await tsx
       .update(trips)
       .set({
-        reviewedAt: new Date().toISOString(),
+        reviewedAt: new Date(),
         reviewedBy: userId,
         status: Status.APPROVED,
         progress: Progress.IN_PROGRESS,
       })
       .where(eq(trips.id, trip.id));
+
     await tsx
       .update(vehicles)
       .set({
@@ -151,7 +137,7 @@ export async function approveRequest(tripId: string) {
     await tsx
       .update(trips)
       .set({
-        reviewedAt: new Date().toISOString(),
+        reviewedAt: new Date(),
         reviewedBy: userId,
         status: Status.REJECTED,
       })
@@ -186,7 +172,7 @@ export async function rejectRequest(tripId: string) {
   await db
     .update(trips)
     .set({
-      reviewedAt: new Date().toISOString(),
+      reviewedAt: new Date(),
       reviewedBy: userId,
       status: Status.REJECTED,
     })
@@ -212,7 +198,7 @@ export async function finishTrip() {
     const [trip] = await tx
       .update(trips)
       .set({
-        finishedAt: new Date().toISOString(),
+        finishedAt: new Date(),
         progress: Progress.DONE,
       })
       .where(

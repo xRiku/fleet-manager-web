@@ -48,7 +48,6 @@ export function RequestVehicleForm({
 }) {
   const branches = use(branchesPromise);
   const [vehicles, setVehicles] = useState<Vehicle[]>([]);
-  const [_, setIsLoadingVehicles] = useState(false);
   const { toggleIsRequestVehicleModalOpened } = useModalStore();
 
   const form = useForm<RequestVehicleSchema>({
@@ -66,7 +65,6 @@ export function RequestVehicleForm({
     if (!originId) return;
 
     async function asyncFunction() {
-      setIsLoadingVehicles(true);
       try {
         const fetchedVehicles = await fetch(`/api/vehicles/${originId}`);
         const parsedFetchedVehicles = await fetchedVehicles.json();
@@ -75,7 +73,6 @@ export function RequestVehicleForm({
       } catch (error) {
         console.error(error);
       } finally {
-        setIsLoadingVehicles(false);
       }
     }
 
