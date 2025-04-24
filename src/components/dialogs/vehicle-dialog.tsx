@@ -59,10 +59,10 @@ export function VehicleDialog({
       plate: "",
       model: "",
       color: "",
-      year: 0,
+      year: NaN,
       brand: "",
-      odometer: 0,
-      branchId: branches[0].id,
+      odometer: NaN,
+      branchId: "",
     },
   });
 
@@ -190,10 +190,15 @@ export function VehicleDialog({
                   <Select onValueChange={field.onChange} value={field.value}>
                     <FormControl>
                       <SelectTrigger>
-                        <SelectValue placeholder="Caetité" />
+                        <SelectValue placeholder="Selecione uma filial" />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
+                      {branches.length === 0 && (
+                        <SelectItem value="none" disabled>
+                          Nenhuma filial cadastrada
+                        </SelectItem>
+                      )}
                       {branches.map((branch) => {
                         return (
                           <SelectItem key={branch.id} value={branch.id}>
