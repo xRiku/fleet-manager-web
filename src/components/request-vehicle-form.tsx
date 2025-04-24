@@ -66,7 +66,7 @@ export function RequestVehicleForm({
 
     async function asyncFunction() {
       try {
-        const fetchedVehicles = await fetch(`/api/vehicles/${originId}`);
+        const fetchedVehicles = await fetch(`/api/vehicles/${originId}?availability=available`);
         const parsedFetchedVehicles = await fetchedVehicles.json();
         setVehicles(parsedFetchedVehicles);
         form.setValue("vehicleId", parsedFetchedVehicles[0]?.id || "");

@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from "react";
-import { Garage, Vehicle } from "@/types";
+import { Availability, Garage, Vehicle } from "@/types";
 import {
   Card,
   CardContent,
@@ -19,8 +19,9 @@ export default function GarageCard({garage}: {garage: Garage}) {
       try {
         const fetchedVehicles = await fetch(`/api/vehicles/${garage.id}`);
         const parsedFetchedVehicles = await fetchedVehicles.json();
-        setAvailableVehicles(parsedFetchedVehicles.filter((vehicle: Vehicle) => vehicle.availability === "available"));
-        setUnavailableVehicles(parsedFetchedVehicles.filter((vehicle: Vehicle) => vehicle.availability !== "available"));
+        console.log(parsedFetchedVehicles);
+        setAvailableVehicles(parsedFetchedVehicles.filter((vehicle: Vehicle) => vehicle.availability === Availability.AVAILABLE));
+        setUnavailableVehicles(parsedFetchedVehicles.filter((vehicle: Vehicle) => vehicle.availability === Availability.UNAVAILABLE));
       } catch (error) {
         console.error(error);
       }

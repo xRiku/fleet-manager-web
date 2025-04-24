@@ -20,16 +20,20 @@ export const getVehicles = async () => {
   });
 };
 
-export const getVehiclesForGarage = async (garageId: string) => {
+export const getVehiclesForGarage = async (garageId: string, availability?: Availability) => {
   return await db.query.vehicles.findMany({
     with: {
       garage: true,
     },
-    where: (vehicle, { eq, and }) =>
-      and(
-        eq(vehicle.garageId, garageId),
-        eq(vehicle.availability, Availability.AVAILABLE)
-      ),
+    where: (vehicle, { eq, and }) => {
+      if (availability == undefined) {
+        return eq(vehicle.garageId, garageId);
+      }
+      return and(
+          eq(vehicle.garageId, garageId),
+          eq(vehicle.availability, availability)
+        )
+    }
   });
 };
 

@@ -1,7 +1,9 @@
 import { getVehiclesForGarage } from "@/lib/server-utils";
+import { Availability } from "@/types";
+import { NextRequest } from "next/server";
 
 export async function GET(
-  request: Request,
+  request: NextRequest,
   {
     params,
   }: {
@@ -10,6 +12,10 @@ export async function GET(
     }>;
   }
 ) {
+
+  const searchParams = request.nextUrl.searchParams
+  const availability = searchParams.get('availability')
+  console.log(availability)
   const garageId = (await params).garageId;
   if (!garageId || typeof garageId !== "string") {
     return new Response("Invalid garage ID", {
@@ -18,7 +24,7 @@ export async function GET(
   }
 
   try {
-    const vehicles = await getVehiclesForGarage(garageId);
+    const vehicles = await getVehiclesForGarage(garageId, availability as Availability ?? undefined);
     return Response.json(vehicles);
   } catch (error) {
     console.error(error);
