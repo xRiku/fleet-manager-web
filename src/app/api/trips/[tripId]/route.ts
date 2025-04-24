@@ -12,17 +12,17 @@ export async function GET(
 ) {
   const tripId = (await params).tripId;
   if (!tripId || typeof tripId !== "string") {
-    return new Response("Invalid branch ID", {
+    return new Response("Invalid trip ID", {
       status: 400,
     });
   }
 
   try {
-    const vehicles = await getTripById(tripId);
-    return Response.json(vehicles);
+    const trips = await getTripById(tripId);
+    return Response.json(trips);
   } catch (error) {
     console.error(error);
-    return new Response("Failed to fetch vehicles", {
+    return new Response("Failed to fetch trip", {
       status: 500,
     });
   }

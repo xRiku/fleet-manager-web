@@ -1,5 +1,5 @@
 import { relations } from "drizzle-orm";
-import { text, integer, timestamp, pgTable } from "drizzle-orm/pg-core";
+import { text, integer, timestamp, pgTable, boolean } from "drizzle-orm/pg-core";
 import { Status } from "@/types";
 
 export const branches = pgTable("branches", {
@@ -48,7 +48,7 @@ export const users = pgTable("users", {
   documentNumber: text("document_number").notNull().unique(),
   role: text("role").notNull(),
   email: text("email").notNull(),
-  emailVerified: integer("email_verified").notNull(),
+  emailVerified: boolean("email_verified").notNull(),
   image: text("image"),
   createdAt: timestamp("created_at").notNull(),
   updatedAt: timestamp("updated_at").notNull(),
