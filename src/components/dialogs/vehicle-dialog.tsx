@@ -28,7 +28,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
-import { Branch } from "@/types";
+import { Garage } from "@/types";
 import { use } from "react";
 import { createVehicle } from "@/actions/actions";
 import { capitalize } from "@/lib/utils";
@@ -37,7 +37,7 @@ const vehicleSchema = z.object({
   plate: z.string().trim(),
   odometer: z.coerce.number().positive(),
   color: z.string().trim(),
-  branchId: z.string().trim(),
+  garageId: z.string().trim(),
   model: z.string().trim(),
   brand: z.string().trim(),
   year: z.coerce.number().positive(),
@@ -46,12 +46,12 @@ const vehicleSchema = z.object({
 type VehicleSchema = z.infer<typeof vehicleSchema>;
 
 export function VehicleDialog({
-  branchesPromise,
+  garagesPromise,
 }: {
-  branchesPromise: Promise<Branch[]>;
+  garagesPromise: Promise<Garage[]>;
 }) {
   const { isVehicleModalOpened, toggleIsVehicleModalOpened } = useModalStore();
-  const branches = use(branchesPromise);
+  const garages = use(garagesPromise);
 
   const form = useForm<VehicleSchema>({
     resolver: zodResolver(vehicleSchema),
@@ -59,10 +59,10 @@ export function VehicleDialog({
       plate: "",
       model: "",
       color: "",
-      year: NaN,
+      year: undefined,
       brand: "",
-      odometer: NaN,
-      branchId: "",
+      odometer: undefined,
+      garageId: "",
     },
   });
 
@@ -161,7 +161,12 @@ export function VehicleDialog({
                 <FormItem>
                   <FormLabel>Ano</FormLabel>
                   <FormControl>
-                    <Input inputMode="numeric" placeholder="2023" {...field} />
+                    <Input 
+                      inputMode="numeric" 
+                      placeholder="2023" 
+                      {...field} 
+                      value={field.value ?? ""}
+                    />
                   </FormControl>
 
                   <FormMessage />
@@ -175,7 +180,12 @@ export function VehicleDialog({
                 <FormItem>
                   <FormLabel>Odômetro</FormLabel>
                   <FormControl>
-                    <Input inputMode="numeric" placeholder="2500" {...field} />
+                    <Input
+                      inputMode="numeric"
+                      placeholder="2500" 
+                      {...field}
+                      value={field.value ?? ""}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -183,26 +193,26 @@ export function VehicleDialog({
             />
             <FormField
               control={form.control}
-              name="branchId"
+              name="garageId"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Filial</FormLabel>
+                  <FormLabel>Garagem</FormLabel>
                   <Select onValueChange={field.onChange} value={field.value}>
                     <FormControl>
                       <SelectTrigger>
-                        <SelectValue placeholder="Selecione uma filial" />
+                        <SelectValue placeholder="Selecione uma garagem" />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      {branches.length === 0 && (
+                      {garages.length === 0 && (
                         <SelectItem value="none" disabled>
-                          Nenhuma filial cadastrada
+                          Nenhuma garagem cadastrada
                         </SelectItem>
                       )}
-                      {branches.map((branch) => {
+                      {garages.map((garage) => {
                         return (
-                          <SelectItem key={branch.id} value={branch.id}>
-                            {branch.name}
+                          <SelectItem key={garage.id} value={garage.id}>
+                            {garage.name}
                           </SelectItem>
                         );
                       })}

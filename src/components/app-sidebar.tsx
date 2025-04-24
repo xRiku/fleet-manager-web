@@ -39,8 +39,8 @@ const items = [
     icon: Signpost,
   },
   {
-    title: "Filiais",
-    url: "/branches",
+    title: "Garagens",
+    url: "/garages",
     icon: Garage,
   },
   {

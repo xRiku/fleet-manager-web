@@ -12,27 +12,27 @@ import { Label } from "@/components/ui/label";
 import { useModalStore } from "@/stores/modal-store";
 import { Button } from "../ui/button";
 import { useState } from "react";
-import { createBranch } from "@/actions/actions";
+import { createGarage } from "@/actions/actions";
 
-export function BranchDialog() {
-  const { isBranchModalOpened, toggleIsBranchModalOpened } = useModalStore();
+export function GarageDialog() {
+  const { isGarageModalOpened, toggleIsGarageModalOpened } = useModalStore();
   const [name, setName] = useState("");
 
   const handleClick = async () => {
     try {
-      await createBranch(name);
+      await createGarage(name);
     } catch (error) {
       console.log(error);
     }
 
-    toggleIsBranchModalOpened();
+    toggleIsGarageModalOpened();
   };
 
   return (
-    <Dialog open={isBranchModalOpened} onOpenChange={toggleIsBranchModalOpened}>
+    <Dialog open={isGarageModalOpened} onOpenChange={toggleIsGarageModalOpened}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Criar filial</DialogTitle>
+          <DialogTitle>Criar garagem</DialogTitle>
         </DialogHeader>
         <div className="flex flex-col py-4">
           <div className="flex flex-col gap-2">
@@ -43,7 +43,7 @@ export function BranchDialog() {
               id="name"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              placeholder="Caetité"
+              placeholder="Garagem"
               className="col-span-3"
             />
           </div>

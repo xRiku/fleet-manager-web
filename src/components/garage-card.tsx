@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from "react";
-import { Branch, Vehicle } from "@/types";
+import { Garage, Vehicle } from "@/types";
 import {
   Card,
   CardContent,
@@ -9,15 +9,15 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import { Badge } from "./ui/badge";
-import { Garage } from "@phosphor-icons/react";
-export default function BranchCard({branch}: {branch: Branch}) {
+import { Garage as GarageIcon} from "@phosphor-icons/react";
+export default function GarageCard({garage}: {garage: Garage}) {
   const [availableVehicles, setAvailableVehicles] = useState<Vehicle[]>([]);
   const [unavailableVehicles, setUnavailableVehicles] = useState<Vehicle[]>([]);
 
   useEffect(() => {
       async function asyncFunction() {
       try {
-        const fetchedVehicles = await fetch(`/api/vehicles/${branch.id}`);
+        const fetchedVehicles = await fetch(`/api/vehicles/${garage.id}`);
         const parsedFetchedVehicles = await fetchedVehicles.json();
         setAvailableVehicles(parsedFetchedVehicles.filter((vehicle: Vehicle) => vehicle.availability === "available"));
         setUnavailableVehicles(parsedFetchedVehicles.filter((vehicle: Vehicle) => vehicle.availability !== "available"));
@@ -26,14 +26,14 @@ export default function BranchCard({branch}: {branch: Branch}) {
       }
     }
     asyncFunction();
-  }, [branch]);
+  }, [garage]);
 
 
   return (
     <Card className="w-64 hover:shadow-lg transition">
       <CardHeader className="flex items-center gap-2">
-        <Garage weight="bold" size={20}/>
-        <CardTitle>{branch.name}</CardTitle>
+        <GarageIcon weight="bold" size={20}/>
+        <CardTitle>{garage.name}</CardTitle>
       </CardHeader>
       <CardContent className="flex flex-col gap-2">
         <Badge variant="success" className="min-w-[180px] justify-between">Veículos disponíveis: <strong>{availableVehicles.length}</strong></Badge>

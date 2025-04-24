@@ -1,7 +1,7 @@
 "use server";
 
 import { db } from "@/db";
-import { branches, trips, vehicles } from "@/db/schema";
+import { garages, trips, vehicles } from "@/db/schema";
 import { v4 as uuidv4 } from "uuid";
 import { and, eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
@@ -37,26 +37,26 @@ export async function createUser({
   revalidatePath("/users", "page");
 }
 
-export async function createBranch(name: string) {
+export async function createGarage(name: string) {
   const cityExists = await db
     .select()
-    .from(branches)
-    .where(eq(branches.name, name));
+    .from(garages)
+    .where(eq(garages.name, name));
 
   if (cityExists.length) {
     throw Error("City already exists.");
   }
 
-  await db.insert(branches).values({
+  await db.insert(garages).values({
     id: uuidv4(),
     name,
   });
 
-  revalidatePath("/branches", "page");
+  revalidatePath("/garages", "page");
 }
 
 export async function createVehicle(
-  data: Omit<Vehicle, "id" | "branch" | "availability"> & { branchId: string }
+  data: Omit<Vehicle, "id" | "garage" | "availability"> & { garageId: string }
 ) {
   const vehicleExists = await db
     .select()
@@ -220,7 +220,7 @@ export async function finishTrip() {
       .update(vehicles)
       .set({
         availability: Availability.AVAILABLE,
-        branchId: trip.destinyId,
+        garageId: trip.destinyId,
       })
       .where(eq(vehicles.id, trip.vehicleId));
   });

@@ -1,4 +1,4 @@
-import { getVehiclesForBranch } from "@/lib/server-utils";
+import { getVehiclesForGarage } from "@/lib/server-utils";
 
 export async function GET(
   request: Request,
@@ -6,19 +6,19 @@ export async function GET(
     params,
   }: {
     params: Promise<{
-      branchId: string;
+      garageId: string;
     }>;
   }
 ) {
-  const branchId = (await params).branchId;
-  if (!branchId || typeof branchId !== "string") {
-    return new Response("Invalid branch ID", {
+  const garageId = (await params).garageId;
+  if (!garageId || typeof garageId !== "string") {
+    return new Response("Invalid garage ID", {
       status: 400,
     });
   }
 
   try {
-    const vehicles = await getVehiclesForBranch(branchId);
+    const vehicles = await getVehiclesForGarage(garageId);
     return Response.json(vehicles);
   } catch (error) {
     console.error(error);

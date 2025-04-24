@@ -2,7 +2,7 @@ import { CompleteTripConfirmationDrawer } from "@/components/complete-trip-confi
 import Header from "@/components/header";
 import { RequestVehicleDrawer } from "@/components/request-vehicle-drawer";
 import { auth } from "@/lib/auth";
-import { getBranches } from "@/lib/server-utils";
+import { getGarages } from "@/lib/server-utils";
 import { Role } from "@/types";
 import { redirect } from "next/navigation";
 import { headers } from "next/headers";
@@ -12,7 +12,7 @@ export default async function Layout({
 }: {
   children: React.ReactNode;
 }) {
-  const branchesPromise = getBranches();
+  const garagesPromise = getGarages();
   const session = await auth.api.getSession({
     headers: await headers(),
   });
@@ -25,7 +25,7 @@ export default async function Layout({
     <main className="flex flex-col w-full h-dvh">
       <Header />
       <div className="py-8 px-4 h-full">{children}</div>
-      <RequestVehicleDrawer branchesPromise={branchesPromise} />
+      <RequestVehicleDrawer garagesPromise={garagesPromise} />
       <CompleteTripConfirmationDrawer />
     </main>
   );

@@ -2,7 +2,7 @@ import { relations } from "drizzle-orm";
 import { text, integer, timestamp, pgTable, boolean } from "drizzle-orm/pg-core";
 import { Status } from "@/types";
 
-export const branches = pgTable("branches", {
+export const garages = pgTable("garages", {
   id: text("id").primaryKey(),
   name: text("name").notNull(),
   createdAt: timestamp("created_at").notNull().defaultNow(),
@@ -19,7 +19,7 @@ export const vehicles = pgTable("vehicles", {
   odometer: integer("odometer").notNull(),
   availability: text("availability").notNull(),
 
-  branchId: text("branch_id").notNull(),
+  garageId: text("garage_id").notNull(),
 
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
@@ -54,7 +54,7 @@ export const users = pgTable("users", {
   updatedAt: timestamp("updated_at").notNull(),
 });
 
-export const branchesRelations = relations(branches, ({ many }) => ({
+export const garagesRelations = relations(garages, ({ many }) => ({
   vehicles: many(vehicles),
 }));
 
@@ -63,14 +63,14 @@ export const usersRelations = relations(users, ({ many }) => ({
 }));
 
 export const tripsRelations = relations(trips, ({ one }) => ({
-  origin: one(branches, {
+  origin: one(garages, {
     fields: [trips.originId],
-    references: [branches.id],
+    references: [garages.id],
   }),
 
-  destiny: one(branches, {
+  destiny: one(garages, {
     fields: [trips.destinyId],
-    references: [branches.id],
+    references: [garages.id],
   }),
 
   vehicle: one(vehicles, {
@@ -85,9 +85,9 @@ export const tripsRelations = relations(trips, ({ one }) => ({
 }));
 
 export const vehiclesRelations = relations(vehicles, ({ one, many }) => ({
-  branch: one(branches, {
-    fields: [vehicles.branchId],
-    references: [branches.id],
+  garage: one(garages, {
+    fields: [vehicles.garageId],
+    references: [garages.id],
   }),
   trips: many(trips),
 }));
@@ -133,7 +133,7 @@ export const verifications = pgTable("verifications", {
 });
 
 // Select (read) types
-export type Branch = typeof branches.$inferSelect;
+export type Garage = typeof garages.$inferSelect;
 export type Vehicle = typeof vehicles.$inferSelect;
 export type Trip = typeof trips.$inferSelect;
 export type User = typeof users.$inferSelect;
@@ -142,7 +142,7 @@ export type Account = typeof accounts.$inferSelect;
 export type Verification = typeof verifications.$inferSelect;
 
 // Insert (create) types
-export type NewBranch = typeof branches.$inferInsert;
+export type NewGarage = typeof garages.$inferInsert;
 export type NewVehicle = typeof vehicles.$inferInsert;
 export type NewTrip = typeof trips.$inferInsert;
 export type NewUser = typeof users.$inferInsert;
@@ -151,8 +151,8 @@ export type NewAccount = typeof accounts.$inferInsert;
 export type NewVerification = typeof verifications.$inferInsert;
 
 export type TripWithRelations = Trip & {
-  origin?: typeof branches.$inferSelect;
-  destiny?: typeof branches.$inferSelect;
+  origin?: typeof garages.$inferSelect;
+  destiny?: typeof garages.$inferSelect;
   vehicle?: typeof vehicles.$inferSelect;
   driver?: typeof users.$inferSelect;
 };

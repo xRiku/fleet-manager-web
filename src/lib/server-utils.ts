@@ -1,33 +1,33 @@
 "use server-only";
 
 import { db } from "@/db";
-import { branches, trips } from "@/db/schema";
+import { garages, trips } from "@/db/schema";
 import { Availability, Progress } from "@/types";
 import { eq } from "drizzle-orm";
 import { auth } from "./auth";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 
-export const getBranches = async () => {
-  return await db.select().from(branches);
+export const getGarages = async () => {
+  return await db.select().from(garages);
 };
 
 export const getVehicles = async () => {
   return await db.query.vehicles.findMany({
     with: {
-      branch: true,
+      garage: true,
     },
   });
 };
 
-export const getVehiclesForBranch = async (branchId: string) => {
+export const getVehiclesForGarage = async (garageId: string) => {
   return await db.query.vehicles.findMany({
     with: {
-      branch: true,
+      garage: true,
     },
     where: (vehicle, { eq, and }) =>
       and(
-        eq(vehicle.branchId, branchId),
+        eq(vehicle.garageId, garageId),
         eq(vehicle.availability, Availability.AVAILABLE)
       ),
   });

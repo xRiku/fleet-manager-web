@@ -1,7 +1,7 @@
 import { create } from "zustand";
 
 type States = {
-  isBranchModalOpened: boolean;
+  isGarageModalOpened: boolean;
   isVehicleModalOpened: boolean;
   isUserModalOpened: boolean;
   isRequestVehicleModalOpened: boolean;
@@ -10,7 +10,7 @@ type States = {
 };
 
 type Actions = {
-  toggleIsBranchModalOpened: () => void;
+  toggleIsGarageModalOpened: () => void;
   toggleIsVehicleModalOpened: () => void;
   toggleIsUserModalOpened: () => void;
   toggleIsRequestVehicleModalOpened: () => void;
@@ -19,15 +19,15 @@ type Actions = {
 };
 
 export const useModalStore = create<States & Actions>((set) => ({
-  isBranchModalOpened: false,
+  isGarageModalOpened: false,
   isVehicleModalOpened: false,
   isUserModalOpened: false,
   isRequestVehicleModalOpened: false,
   isReviewRequestModalOpened: false,
   isCompleteTripConfirmationModalOpened: false,
 
-  toggleIsBranchModalOpened: () =>
-    set((state) => ({ isBranchModalOpened: !state.isBranchModalOpened })),
+  toggleIsGarageModalOpened: () =>
+    set((state) => ({ isGarageModalOpened: !state.isGarageModalOpened })),
   toggleIsVehicleModalOpened: () =>
     set((state) => ({ isVehicleModalOpened: !state.isVehicleModalOpened })),
   toggleIsUserModalOpened: () =>

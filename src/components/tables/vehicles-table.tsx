@@ -40,7 +40,7 @@ export default async function VehiclesTable() {
           <TableHead>Cor</TableHead>
           <TableHead>Ano</TableHead>
           <TableHead>Hodômetro</TableHead>
-          <TableHead className="text-right">Filial</TableHead>
+          <TableHead className="text-right">Garagem</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
@@ -58,7 +58,7 @@ export default async function VehiclesTable() {
             <TableCell>{vehicle.year}</TableCell>
             <TableCell>{vehicle.odometer}</TableCell>
             <TableCell className="text-right">
-              {vehicle.branch?.name}
+              {vehicle.garage?.name}
             </TableCell>
           </TableRow>
         ))}

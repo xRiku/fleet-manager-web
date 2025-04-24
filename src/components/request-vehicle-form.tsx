@@ -18,7 +18,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "./ui/select";
-import { Branch, Vehicle } from "@/types";
+import { Garage, Vehicle } from "@/types";
 import { use, useEffect, useState } from "react";
 import { Button } from "./ui/button";
 import { createVehicleRequest } from "@/actions/actions";
@@ -42,19 +42,19 @@ const requestVehicleSchema = z
 type RequestVehicleSchema = z.infer<typeof requestVehicleSchema>;
 
 export function RequestVehicleForm({
-  branchesPromise,
+  garagesPromise,
 }: {
-  branchesPromise: Promise<Branch[]>;
+  garagesPromise: Promise<Garage[]>;
 }) {
-  const branches = use(branchesPromise);
+  const garages = use(garagesPromise);
   const [vehicles, setVehicles] = useState<Vehicle[]>([]);
   const { toggleIsRequestVehicleModalOpened } = useModalStore();
 
   const form = useForm<RequestVehicleSchema>({
     resolver: zodResolver(requestVehicleSchema),
     defaultValues: {
-      originId: branches[0].id,
-      destinyId: branches[1].id,
+      originId: garages[0].id,
+      destinyId: garages[1].id,
       vehicleId: "",
     },
   });
@@ -101,18 +101,18 @@ export function RequestVehicleForm({
             name="originId"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Filial de origem</FormLabel>
+                <FormLabel>Garagem de origem</FormLabel>
                 <Select onValueChange={field.onChange} value={field.value}>
                   <FormControl>
                     <SelectTrigger>
-                      <SelectValue placeholder={branches[0].name} />
+                      <SelectValue placeholder={garages[0].name} />
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    {branches.map((branch) => {
+                    {garages.map((garage) => {
                       return (
-                        <SelectItem key={branch.id} value={branch.id}>
-                          {branch.name}
+                        <SelectItem key={garage.id} value={garage.id}>
+                          {garage.name}
                         </SelectItem>
                       );
                     })}
@@ -153,18 +153,18 @@ export function RequestVehicleForm({
             name="destinyId"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Filial de destino</FormLabel>
+                <FormLabel>Garagem de destino</FormLabel>
                 <Select onValueChange={field.onChange} value={field.value}>
                   <FormControl>
                     <SelectTrigger>
-                      <SelectValue placeholder={branches[1].name} />
+                      <SelectValue placeholder={garages[1].name} />
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    {branches.map((branch) => {
+                    {garages.map((garage) => {
                       return (
-                        <SelectItem key={branch.id} value={branch.id}>
-                          {branch.name}
+                        <SelectItem key={garage.id} value={garage.id}>
+                          {garage.name}
                         </SelectItem>
                       );
                     })}

@@ -1,4 +1,4 @@
-// import { branches, trips, users, vehicles, accounts } from "@/db/schema";
+// import { garages, trips, users, vehicles, accounts } from "@/db/schema";
 // import { v4 as uuidv4 } from "uuid";
 // import { drizzle } from "drizzle-orm/better-sqlite3";
 // import "dotenv/config";
@@ -17,7 +17,7 @@
 // async function seed() {
 //   console.log("🌱 Seeding database...");
 
-//   await db.insert(branches).values([
+//   await db.insert(garages).values([
 //     { id: uuidv4(), name: "Caetité" },
 //     { id: uuidv4(), name: "Guanambi" },
 //   ]);
@@ -27,7 +27,7 @@
 //   const hashedAdminPassword = await bcrypt.hash("admin123", 10);
 //   const hashedUserPassword = await bcrypt.hash("user123", 10);
 
-//   const insertedBranches = await db.select().from(branches).all();
+//   const insertedGarages = await db.select().from(garages).all();
 
 //   await db.insert(vehicles).values({
 //     id: uuidv4(),
@@ -37,7 +37,7 @@
 //     plate: "ABC1D23",
 //     year: 1980,
 //     odometer: 123456,
-//     branchId: insertedBranches[0].id, // Assign to the first branch
+//     garageId: insertedGarages[0].id, // Assign to the first garage
 //     availability: Availability.AVAILABLE,
 //   });
 
@@ -49,7 +49,7 @@
 //     plate: "DEF4G56",
 //     year: 2020,
 //     odometer: 654321,
-//     branchId: insertedBranches[1].id, // Assign to the second branch
+//     garageId: insertedGarages[1].id, // Assign to the second garage
 //     availability: Availability.AVAILABLE,
 //   });
 
@@ -61,7 +61,7 @@
 //     plate: "GHI7J89",
 //     year: 1980,
 //     odometer: 987654,
-//     branchId: insertedBranches[0].id, // Assign to the first branch
+//     garageId: insertedGarages[0].id, // Assign to the first garage
 //     availability: Availability.AVAILABLE,
 //   });
 
@@ -94,8 +94,8 @@
 //   await db.insert(trips).values({
 //     id: uuidv4(),
 //     vehicleId: insertedVehicles[0].id,
-//     originId: insertedBranches[1].id,
-//     destinyId: insertedBranches[0].id,
+//     originId: insertedGarages[1].id,
+//     destinyId: insertedGarages[0].id,
 //     driverId: insertedUsers[0].id,
 //   });
 

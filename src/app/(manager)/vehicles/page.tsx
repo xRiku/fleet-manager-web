@@ -2,11 +2,11 @@ import VehiclesModalTriggerButton from "@/components/buttons/vehicles-modal-trig
 import { VehicleDialog } from "@/components/dialogs/vehicle-dialog";
 import { GenericSkeleton } from "@/components/generic-skeleton";
 import VehiclesTable from "@/components/tables/vehicles-table";
-import { getBranches } from "@/lib/server-utils";
+import { getGarages } from "@/lib/server-utils";
 import { Suspense } from "react";
 
 export default function Page() {
-  const branches = getBranches();
+  const garages = getGarages();
 
   return (
     <div className="flex flex-col items-start justify-center">
@@ -19,7 +19,7 @@ export default function Page() {
       </Suspense>
 
       <Suspense fallback="Loading ...">
-        <VehicleDialog branchesPromise={branches} />
+        <VehicleDialog garagesPromise={garages} />
       </Suspense>
     </div>
   );
