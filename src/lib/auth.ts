@@ -10,7 +10,7 @@ export const auth = betterAuth({
     autoSignIn: false,
   },
   database: drizzleAdapter(db, {
-    provider: "sqlite",
+    provider: "pg",
     schema: {
       ...schema,
       user: schema.users,
