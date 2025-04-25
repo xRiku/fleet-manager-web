@@ -10,19 +10,13 @@ import {
   DrawerTitle,
 } from "@/components/ui/drawer";
 import { Button } from "@/components/ui/button";
-import { finishTrip } from "@/actions/actions";
+import { CompleteTripConfirmationForm } from "./complete-trip-confirmation-form";
 
 export function CompleteTripConfirmationDrawer() {
   const {
     isCompleteTripConfirmationModalOpened,
     toggleIsCompleteTripConfirmationModalOpened,
   } = useModalStore();
-
-  const handleConfirm = async () => {
-    await finishTrip();
-
-    toggleIsCompleteTripConfirmationModalOpened();
-  };
 
   return (
     <Drawer
@@ -33,9 +27,11 @@ export function CompleteTripConfirmationDrawer() {
         <DrawerHeader className="text-left">
           <DrawerTitle className="text-lg">Concluir viagem</DrawerTitle>
         </DrawerHeader>
-        <p className="px-4">Deseja confirmar a conclusão da viagem?</p>
+        <CompleteTripConfirmationForm />
         <DrawerFooter className="pt-2">
-          <Button onClick={handleConfirm}>Confirmar</Button>
+          <Button form="complete-trip-form" type="submit">
+            Confirmar
+          </Button>
           <DrawerClose asChild>
             <Button variant="outline">Cancelar</Button>
           </DrawerClose>

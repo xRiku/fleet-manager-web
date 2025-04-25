@@ -10,6 +10,7 @@ import { auth } from "@/lib/auth";
 import { AuthSchema } from "@/lib/validations";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
+import { CompleteTripSchema } from "@/components/complete-trip-confirmation-form";
 
 export async function createUser({
   name,
@@ -181,7 +182,7 @@ export async function rejectRequest(tripId: string) {
   revalidatePath("/trips", "page");
 }
 
-export async function finishTrip() {
+export async function finishTrip(data: CompleteTripSchema) {
   const session = await auth.api.getSession({
     headers: await headers(),
   });
@@ -200,6 +201,8 @@ export async function finishTrip() {
       .set({
         finishedAt: new Date(),
         progress: Progress.DONE,
+        odometerWhenFinishing: data.odometer,
+        notesWhenFinishing: data.notes,
       })
       .where(
         and(
@@ -221,6 +224,7 @@ export async function finishTrip() {
       .set({
         availability: Availability.AVAILABLE,
         garageId: trip.destinyId,
+        odometer: data.odometer,
       })
       .where(eq(vehicles.id, trip.vehicleId));
   });

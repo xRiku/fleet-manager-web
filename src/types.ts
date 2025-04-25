@@ -51,6 +51,12 @@ export enum Availability {
   UNAVAILABLE = "unavailable",
 }
 
+export enum GenericAnswer {
+  OK = "ok",
+  NOT_OK = "notOk",
+  NOT_CHECKED = "notChecked",
+}
+
 export enum Role {
   ADMIN = "admin",
   USER = "user",
