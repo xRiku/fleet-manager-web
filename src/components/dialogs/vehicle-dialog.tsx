@@ -161,10 +161,10 @@ export function VehicleDialog({
                 <FormItem>
                   <FormLabel>Ano</FormLabel>
                   <FormControl>
-                    <Input 
-                      inputMode="numeric" 
-                      placeholder="2023" 
-                      {...field} 
+                    <Input
+                      inputMode="numeric"
+                      placeholder="2023"
+                      {...field}
                       value={field.value ?? ""}
                     />
                   </FormControl>
@@ -182,7 +182,7 @@ export function VehicleDialog({
                   <FormControl>
                     <Input
                       inputMode="numeric"
-                      placeholder="2500" 
+                      placeholder="2500"
                       {...field}
                       value={field.value ?? ""}
                     />

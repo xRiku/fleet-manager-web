@@ -11,6 +11,7 @@ import { AuthSchema } from "@/lib/validations";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { CompleteTripSchema } from "@/components/complete-trip-confirmation-form";
+import { RequestVehicleSchema } from "@/components/request-vehicle-form";
 
 export async function createUser({
   name,
@@ -77,11 +78,7 @@ export async function createVehicle(
   revalidatePath("/vehicles", "page");
 }
 
-export async function createVehicleRequest(data: {
-  vehicleId: string;
-  originId: string;
-  destinyId: string;
-}) {
+export async function createVehicleRequest(data: RequestVehicleSchema) {
   const session = await auth.api.getSession({
     headers: await headers(),
   });
@@ -95,6 +92,8 @@ export async function createVehicleRequest(data: {
     ...data,
     driverId,
     status: Status.IN_ANALYSIS,
+    odometerWhenRequesting: data.odometer,
+    notesWhenRequesting: data.notes,
   });
 
   revalidatePath("/", "page");

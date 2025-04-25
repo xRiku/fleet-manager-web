@@ -18,9 +18,7 @@ export default function Page() {
         <VehiclesTable />
       </Suspense>
 
-      <Suspense fallback="Loading ...">
-        <VehicleDialog garagesPromise={garages} />
-      </Suspense>
+      <VehicleDialog garagesPromise={garages} />
     </div>
   );
 }

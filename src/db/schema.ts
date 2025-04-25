@@ -6,7 +6,7 @@ import {
   pgTable,
   boolean,
 } from "drizzle-orm/pg-core";
-import { Status } from "@/types";
+import { GenericAnswer, Status } from "@/types";
 
 export const garages = pgTable("garages", {
   id: text("id").primaryKey(),
@@ -44,16 +44,16 @@ export const trips = pgTable("trips", {
   reviewedBy: text("reviewed_by"),
   finishedAt: timestamp("finished_at"),
 
-  // oilLevel: text("oil_level").notNull().default(GenericAnswer.NOT_CHECKED),
-  // waterLevel: text("water_level").notNull().default(GenericAnswer.NOT_CHECKED),
-  // tiresStatus: text("tires_status")
-  //   .notNull()
-  //   .default(GenericAnswer.NOT_CHECKED),
-  // spareTire: text("spare_tire").notNull().default(GenericAnswer.NOT_CHECKED),
-  // headlights: text("headlights").notNull().default(GenericAnswer.NOT_CHECKED),
+  oilLevel: text("oil_level").notNull().default(GenericAnswer.NOT_CHECKED),
+  waterLevel: text("water_level").notNull().default(GenericAnswer.NOT_CHECKED),
+  tiresStatus: text("tires_status")
+    .notNull()
+    .default(GenericAnswer.NOT_CHECKED),
+  spareTire: text("spare_tire").notNull().default(GenericAnswer.NOT_CHECKED),
+  headlights: text("headlights").notNull().default(GenericAnswer.NOT_CHECKED),
 
-  // odometerWhenRequesting: integer("odometer_when_requesting").notNull(),
-  // notesWhenRequesting: text("notes_when_requesting"),
+  odometerWhenRequesting: integer("odometer_when_requesting").notNull(),
+  notesWhenRequesting: text("notes_when_requesting"),
 
   odometerWhenFinishing: integer("odometer_when_finishing"),
   notesWhenFinishing: text("notes_when_finishing"),

@@ -18,28 +18,34 @@ import {
   SelectTrigger,
   SelectValue,
 } from "./ui/select";
-import { Garage, Vehicle } from "@/types";
+import { Garage, GenericAnswer, Vehicle } from "@/types";
 import { use, useEffect, useState } from "react";
-import { Button } from "./ui/button";
 import { createVehicleRequest } from "@/actions/actions";
 import { useModalStore } from "@/stores/modal-store";
+import { Textarea } from "@/components/ui/textarea";
+import { Input } from "@/components/ui/input";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
 const requestVehicleSchema = z
   .object({
     originId: z.string(),
     destinyId: z.string(),
     vehicleId: z.string(),
-  })
-  .refine((ctx) => ctx.destinyId !== ctx.originId, {
-    message: "Destino não pode ser igual a origem",
-    path: ["destinyId"],
+    oilLevel: z.string(),
+    waterLevel: z.string(),
+    tiresStatus: z.string(),
+    spareTire: z.string(),
+    headlights: z.string(),
+
+    odometer: z.coerce.number(),
+    notes: z.string().optional(),
   })
   .refine((ctx) => ctx.vehicleId !== "", {
     message: "Selecione um veículo",
     path: ["vehicleId"],
   });
 
-type RequestVehicleSchema = z.infer<typeof requestVehicleSchema>;
+export type RequestVehicleSchema = z.infer<typeof requestVehicleSchema>;
 
 export function RequestVehicleForm({
   garagesPromise,
@@ -56,6 +62,13 @@ export function RequestVehicleForm({
       originId: garages[0].id,
       destinyId: garages[1].id,
       vehicleId: "",
+      oilLevel: GenericAnswer.NOT_CHECKED,
+      waterLevel: GenericAnswer.NOT_CHECKED,
+      tiresStatus: GenericAnswer.NOT_CHECKED,
+      spareTire: GenericAnswer.NOT_CHECKED,
+      headlights: GenericAnswer.NOT_CHECKED,
+      notes: "",
+      odometer: 0,
     },
   });
 
@@ -66,7 +79,9 @@ export function RequestVehicleForm({
 
     async function asyncFunction() {
       try {
-        const fetchedVehicles = await fetch(`/api/vehicles/${originId}?availability=available`);
+        const fetchedVehicles = await fetch(
+          `/api/vehicles/${originId}?availability=available`
+        );
         const parsedFetchedVehicles = await fetchedVehicles.json();
         setVehicles(parsedFetchedVehicles);
         form.setValue("vehicleId", parsedFetchedVehicles[0]?.id || "");
@@ -83,7 +98,7 @@ export function RequestVehicleForm({
     try {
       await createVehicleRequest(data);
       toggleIsRequestVehicleModalOpened();
-      form.reset();
+      // form.reset();
     } catch (error) {
       console.error(error);
     }
@@ -95,6 +110,7 @@ export function RequestVehicleForm({
         <form
           onSubmit={form.handleSubmit(onSubmit)}
           className="flex flex-col gap-4"
+          id="request-vehicle-form"
         >
           <FormField
             control={form.control}
@@ -174,7 +190,232 @@ export function RequestVehicleForm({
               </FormItem>
             )}
           />
-          <Button type="submit">Solicitar</Button>
+          <FormField
+            control={form.control}
+            name="odometer"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Quilometragem</FormLabel>
+                <Input {...field} />
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="oilLevel"
+            render={({ field }) => (
+              <FormItem className="space-y-3">
+                <FormLabel>
+                  O nível de óleo do motor está dentro dos padrões?
+                </FormLabel>
+                <FormControl>
+                  <RadioGroup
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                    className="flex flex-col space-y-1"
+                  >
+                    <FormItem className="flex items-center space-x-3 space-y-0">
+                      <FormControl>
+                        <RadioGroupItem value={GenericAnswer.OK} />
+                      </FormControl>
+                      <FormLabel className="font-normal">Sim</FormLabel>
+                    </FormItem>
+                    <FormItem className="flex items-center space-x-3 space-y-0">
+                      <FormControl>
+                        <RadioGroupItem value={GenericAnswer.NOT_OK} />
+                      </FormControl>
+                      <FormLabel className="font-normal">Não</FormLabel>
+                    </FormItem>
+                    <FormItem className="flex items-center space-x-3 space-y-0">
+                      <FormControl>
+                        <RadioGroupItem value={GenericAnswer.NOT_CHECKED} />
+                      </FormControl>
+                      <FormLabel className="font-normal">
+                        Não verifiquei
+                      </FormLabel>
+                    </FormItem>
+                  </RadioGroup>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="waterLevel"
+            render={({ field }) => (
+              <FormItem className="space-y-3">
+                <FormLabel>
+                  O nível de água do radiador/reservatório está adequado?
+                </FormLabel>
+                <FormControl>
+                  <RadioGroup
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                    className="flex flex-col space-y-1"
+                  >
+                    <FormItem className="flex items-center space-x-3 space-y-0">
+                      <FormControl>
+                        <RadioGroupItem value={GenericAnswer.OK} />
+                      </FormControl>
+                      <FormLabel className="font-normal">Sim</FormLabel>
+                    </FormItem>
+                    <FormItem className="flex items-center space-x-3 space-y-0">
+                      <FormControl>
+                        <RadioGroupItem value={GenericAnswer.NOT_OK} />
+                      </FormControl>
+                      <FormLabel className="font-normal">Não</FormLabel>
+                    </FormItem>
+                    <FormItem className="flex items-center space-x-3 space-y-0">
+                      <FormControl>
+                        <RadioGroupItem value={GenericAnswer.NOT_CHECKED} />
+                      </FormControl>
+                      <FormLabel className="font-normal">
+                        Não verifiquei
+                      </FormLabel>
+                    </FormItem>
+                  </RadioGroup>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="tiresStatus"
+            render={({ field }) => (
+              <FormItem className="space-y-3">
+                <FormLabel>
+                  Os pneus estão em bom estado e calibrados?
+                </FormLabel>
+                <FormControl>
+                  <RadioGroup
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                    className="flex flex-col space-y-1"
+                  >
+                    <FormItem className="flex items-center space-x-3 space-y-0">
+                      <FormControl>
+                        <RadioGroupItem value={GenericAnswer.OK} />
+                      </FormControl>
+                      <FormLabel className="font-normal">Sim</FormLabel>
+                    </FormItem>
+                    <FormItem className="flex items-center space-x-3 space-y-0">
+                      <FormControl>
+                        <RadioGroupItem value={GenericAnswer.NOT_OK} />
+                      </FormControl>
+                      <FormLabel className="font-normal">Não</FormLabel>
+                    </FormItem>
+                    <FormItem className="flex items-center space-x-3 space-y-0">
+                      <FormControl>
+                        <RadioGroupItem value={GenericAnswer.NOT_CHECKED} />
+                      </FormControl>
+                      <FormLabel className="font-normal">
+                        Não verifiquei
+                      </FormLabel>
+                    </FormItem>
+                  </RadioGroup>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="spareTire"
+            render={({ field }) => (
+              <FormItem className="space-y-3">
+                <FormLabel>
+                  O pneu step está disponível e em bom estado?
+                </FormLabel>
+                <FormControl>
+                  <RadioGroup
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                    className="flex flex-col space-y-1"
+                  >
+                    <FormItem className="flex items-center space-x-3 space-y-0">
+                      <FormControl>
+                        <RadioGroupItem value={GenericAnswer.OK} />
+                      </FormControl>
+                      <FormLabel className="font-normal">Sim</FormLabel>
+                    </FormItem>
+                    <FormItem className="flex items-center space-x-3 space-y-0">
+                      <FormControl>
+                        <RadioGroupItem value={GenericAnswer.NOT_OK} />
+                      </FormControl>
+                      <FormLabel className="font-normal">Não</FormLabel>
+                    </FormItem>
+                    <FormItem className="flex items-center space-x-3 space-y-0">
+                      <FormControl>
+                        <RadioGroupItem value={GenericAnswer.NOT_CHECKED} />
+                      </FormControl>
+                      <FormLabel className="font-normal">
+                        Não verifiquei
+                      </FormLabel>
+                    </FormItem>
+                  </RadioGroup>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="headlights"
+            render={({ field }) => (
+              <FormItem className="space-y-3">
+                <FormLabel>
+                  As luzes (faróis, lanternas, pisca, freio) estão funcionando
+                  corretamente?
+                </FormLabel>
+                <FormControl>
+                  <RadioGroup
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                    className="flex flex-col space-y-1"
+                  >
+                    <FormItem className="flex items-center space-x-3 space-y-0">
+                      <FormControl>
+                        <RadioGroupItem value={GenericAnswer.OK} />
+                      </FormControl>
+                      <FormLabel className="font-normal">Sim</FormLabel>
+                    </FormItem>
+                    <FormItem className="flex items-center space-x-3 space-y-0">
+                      <FormControl>
+                        <RadioGroupItem value={GenericAnswer.NOT_OK} />
+                      </FormControl>
+                      <FormLabel className="font-normal">Não</FormLabel>
+                    </FormItem>
+                    <FormItem className="flex items-center space-x-3 space-y-0">
+                      <FormControl>
+                        <RadioGroupItem value={GenericAnswer.NOT_CHECKED} />
+                      </FormControl>
+                      <FormLabel className="font-normal">
+                        Não verifiquei
+                      </FormLabel>
+                    </FormItem>
+                  </RadioGroup>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="notes"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>
+                  Houve alguma avaria ou problema durante a retirada do veículo
+                  (opcional)
+                </FormLabel>
+                <Textarea {...field} />
+                <FormMessage />
+              </FormItem>
+            )}
+          />
         </form>
       </Form>
     </div>
