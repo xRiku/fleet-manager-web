@@ -12,7 +12,10 @@ import { Button } from "../ui/button";
 import { approveRequest, rejectRequest } from "@/actions/actions";
 import { useQueryState } from "nuqs";
 import { useEffect, useState } from "react";
-import { Trip } from "@/types";
+import { Status, Trip } from "@/types";
+import { Skeleton } from "../ui/skeleton";
+import { DialogSkeleton } from "../dialog-skeleton";
+import React from "react";
 
 export function ReviewRequestDialog() {
   const { isReviewRequestModalOpened, toggleIsReviewRequestModalOpened } =
@@ -24,11 +27,11 @@ export function ReviewRequestDialog() {
     if (!selectedTripId) {
       return;
     }
+    setTrip(null);
     async function asyncFunction() {
       try {
         const fetchedTrip = await fetch(`/api/trips/${selectedTripId}`);
         const parsedTrip = await fetchedTrip.json();
-        console.log(parsedTrip);
         setTrip(parsedTrip);
       } catch (error) {
         console.error(error);
@@ -69,8 +72,15 @@ export function ReviewRequestDialog() {
     >
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Revisar solicitação</DialogTitle>
+          {trip ? (
+            <DialogTitle>Revisar solicitação</DialogTitle>
+            ): (
+              <DialogTitle className="flex items-center justify-between">
+                <Skeleton className="w-full h-8" />
+              </DialogTitle>
+            )}
         </DialogHeader>
+        {trip ? (
         <div className="flex flex-col gap-2 ">
           <p>
             <strong>Solicitante:</strong> {trip?.driver.name}
@@ -105,17 +115,24 @@ export function ReviewRequestDialog() {
             </p>
           </section>
         </div>
+        ) : (
+          <DialogSkeleton />
+        )}
         <DialogFooter>
-          <Button
-            variant="secondary"
-            onClick={handleRejectClick}
-            className="cursor-pointer"
-          >
-            Recusar
-          </Button>
-          <Button onClick={handleApproveClick} className="cursor-pointer">
-            Aprovar
-          </Button>
+          {trip?.status === Status.IN_ANALYSIS && (
+            <React.Fragment>
+                <Button
+                  variant="secondary"
+                  onClick={handleRejectClick}
+                  className="cursor-pointer"
+                >
+                  Recusar
+                </Button>
+                <Button onClick={handleApproveClick} className="cursor-pointer">
+                  Aprovar
+                </Button>
+            </React.Fragment>
+          )}
         </DialogFooter>
       </DialogContent>
     </Dialog>
