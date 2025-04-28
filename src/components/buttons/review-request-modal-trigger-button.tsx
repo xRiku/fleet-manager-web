@@ -1,14 +1,14 @@
 "use client";
 
 import { useModalStore } from "@/stores/modal-store";
-import { Button } from "../ui/button";
-import React from "react";
-import { NotePencil } from "@phosphor-icons/react";
+import React, { ReactElement } from "react";
 import { useQueryState } from "nuqs";
 
 export default function ReviewRequestModalTriggerButton({
+  children,
   tripId,
 }: {
+  children: ReactElement<{ onClick?: () => void; className?: string }>;
   tripId: string;
 }) {
   const { toggleIsReviewRequestModalOpened } = useModalStore();
@@ -22,13 +22,9 @@ export default function ReviewRequestModalTriggerButton({
     console.log(_);
   };
 
-  return (
-    <Button
-      onClick={handleClick}
-      variant="ghost"
-      className="cursor-pointer [&_svg:not([class*='size-'])]:size-5"
-    >
-      <NotePencil size={24} />
-    </Button>
-  );
+  // Clona o elemento da linha da tabela e adiciona o onClick
+  return React.cloneElement(children, {
+    onClick: handleClick,
+    className: `cursor-pointer hover:bg-gray-100`,
+  });
 }
