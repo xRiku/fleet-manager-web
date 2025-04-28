@@ -8,6 +8,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Image from "next/image";
 import CompleteTripConfirmationModalTriggerButton from "@/components/buttons/complete-trip-confirmation-modal-trigger-button";
 import { Car, FlagBannerFold, MapPin } from "@phosphor-icons/react/dist/ssr";
+import { format } from "date-fns";
 
 export default async function Page() {
   const requests = await getVehicleRequestsForDriver();
@@ -16,6 +17,7 @@ export default async function Page() {
   if (!requests.length) {
     return <VehicleRequestsEmptyState />;
   }
+  
 
   return (
     <Tabs
@@ -30,7 +32,7 @@ export default async function Page() {
         {currentTrip ? (
           <div className="flex flex-col gap-8 h-full">
             <div className="w-full rounded-md bg-muted flex flex-col p-4">
-              <span className="font-semibold mb-2">17/04/2025</span>
+              <span className="font-semibold mb-2">{format(new Date(currentTrip?.createdAt), "dd/MM/yyyy")}</span>
               <div className="flex flex-col">
                 <span className="inline-flex items-center gap-2">
                   <Car weight="duotone" />

@@ -6,16 +6,18 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Textarea } from "@/components/ui/textarea";
 import { finishTrip } from "@/actions/actions";
 import { useModalStore } from "@/stores/modal-store";
 
 const completeTripSchema = z.object({
-  odometer: z.coerce.number(),
+  odometer: z.coerce.number({
+    invalid_type_error: "Informe a quilometragem",
+  }).positive("A quilometragem deve ser maior que zero"),
   notes: z.string().optional(),
 });
 
@@ -27,14 +29,13 @@ export function CompleteTripConfirmationForm() {
   const form = useForm<CompleteTripSchema>({
     defaultValues: {
       notes: "",
-      odometer: 0,
+      odometer: undefined,  // Deixa o campo vazio inicialmente
     },
     resolver: zodResolver(completeTripSchema),
   });
 
   const onSubmit = async (data: CompleteTripSchema) => {
     await finishTrip(data);
-
     toggleIsCompleteTripConfirmationModalOpened();
   };
 
@@ -51,7 +52,11 @@ export function CompleteTripConfirmationForm() {
           render={({ field }) => (
             <FormItem>
               <FormLabel>Quilometragem</FormLabel>
-              <Input {...field} />
+              <Input 
+                {...field} 
+                type="number" 
+                placeholder="Quilometragem do veículo" 
+              />
               <FormMessage />
             </FormItem>
           )}
@@ -65,7 +70,7 @@ export function CompleteTripConfirmationForm() {
                 Houve alguma avaria ou problema durante a retirada do veículo
                 (opcional)
               </FormLabel>
-              <Textarea {...field} />
+              <Textarea {...field} placeholder="Descreva aqui, se houver..." />
               <FormMessage />
             </FormItem>
           )}

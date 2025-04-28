@@ -37,7 +37,10 @@ const requestVehicleSchema = z
     spareTire: z.string(),
     headlights: z.string(),
 
-    odometer: z.coerce.number(),
+    
+    odometer: z.coerce.number({
+      invalid_type_error: "Informe a quilometragem",
+    }).positive("A quilometragem deve ser maior que zero"),
     notes: z.string().optional(),
   })
   .refine((ctx) => ctx.vehicleId !== "", {
@@ -68,7 +71,7 @@ export function RequestVehicleForm({
       spareTire: GenericAnswer.NOT_CHECKED,
       headlights: GenericAnswer.NOT_CHECKED,
       notes: "",
-      odometer: 0,
+      odometer: undefined,
     },
   });
 
@@ -196,7 +199,11 @@ export function RequestVehicleForm({
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Quilometragem</FormLabel>
-                <Input {...field} />
+                <Input 
+                  {...field} 
+                  type="number"
+                  placeholder="Quilometragem do veículo" 
+                />
                 <FormMessage />
               </FormItem>
             )}

@@ -35,7 +35,9 @@ import { capitalize } from "@/lib/utils";
 
 const vehicleSchema = z.object({
   plate: z.string().trim(),
-  odometer: z.coerce.number().positive(),
+  odometer: z.coerce.number({
+    invalid_type_error: "Informe a quilometragem",
+  }).positive("A quilometragem deve ser maior que zero"),
   color: z.string().trim(),
   garageId: z.string().trim(),
   model: z.string().trim(),
@@ -178,13 +180,12 @@ export function VehicleDialog({
               name="odometer"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Odômetro</FormLabel>
+                  <FormLabel>Quilometragem</FormLabel>
                   <FormControl>
-                    <Input
-                      inputMode="numeric"
-                      placeholder="2500"
-                      {...field}
-                      value={field.value ?? ""}
+                    <Input 
+                      {...field} 
+                      type="number"
+                      placeholder="Quilometragem do veículo" 
                     />
                   </FormControl>
                   <FormMessage />
