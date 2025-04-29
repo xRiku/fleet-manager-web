@@ -37,10 +37,11 @@ const requestVehicleSchema = z
     spareTire: z.string(),
     headlights: z.string(),
 
-    
-    odometer: z.coerce.number({
-      invalid_type_error: "Informe a quilometragem",
-    }).positive("A quilometragem deve ser maior que zero"),
+    odometer: z.coerce
+      .number({
+        invalid_type_error: "Informe a quilometragem",
+      })
+      .positive("A quilometragem deve ser maior que zero"),
     notes: z.string().optional(),
   })
   .refine((ctx) => ctx.vehicleId !== "", {
@@ -62,8 +63,8 @@ export function RequestVehicleForm({
   const form = useForm<RequestVehicleSchema>({
     resolver: zodResolver(requestVehicleSchema),
     defaultValues: {
-      originId: garages[0].id,
-      destinyId: garages[1].id,
+      originId: "",
+      destinyId: "",
       vehicleId: "",
       oilLevel: GenericAnswer.NOT_CHECKED,
       waterLevel: GenericAnswer.NOT_CHECKED,
@@ -87,7 +88,14 @@ export function RequestVehicleForm({
         );
         const parsedFetchedVehicles = await fetchedVehicles.json();
         setVehicles(parsedFetchedVehicles);
-        form.setValue("vehicleId", parsedFetchedVehicles[0]?.id || "");
+        // form.setValue("vehicleId", parsedFetchedVehicles[0]?.id || "");
+        form.clearErrors("vehicleId");
+        if (parsedFetchedVehicles.length === 0) {
+          form.setError("vehicleId", {
+            message: "Sem veículos disponíveis no momento",
+            type: "",
+          });
+        }
       } catch (error) {
         console.error(error);
       } finally {
@@ -124,7 +132,7 @@ export function RequestVehicleForm({
                 <Select onValueChange={field.onChange} value={field.value}>
                   <FormControl>
                     <SelectTrigger>
-                      <SelectValue placeholder={garages[0].name} />
+                      <SelectValue placeholder="Selecione uma cidade" />
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
@@ -149,8 +157,8 @@ export function RequestVehicleForm({
                 <FormLabel>Veículo</FormLabel>
                 <Select onValueChange={field.onChange} value={field.value}>
                   <FormControl>
-                    <SelectTrigger>
-                      <SelectValue />
+                    <SelectTrigger disabled={vehicles.length === 0}>
+                      <SelectValue placeholder="Selecione um veículo" />
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
@@ -176,7 +184,7 @@ export function RequestVehicleForm({
                 <Select onValueChange={field.onChange} value={field.value}>
                   <FormControl>
                     <SelectTrigger>
-                      <SelectValue placeholder={garages[1].name} />
+                      <SelectValue placeholder="Selecione uma cidade" />
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
@@ -199,10 +207,10 @@ export function RequestVehicleForm({
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Quilometragem</FormLabel>
-                <Input 
-                  {...field} 
+                <Input
+                  {...field}
                   type="number"
-                  placeholder="Quilometragem do veículo" 
+                  placeholder="Quilometragem do veículo"
                 />
                 <FormMessage />
               </FormItem>

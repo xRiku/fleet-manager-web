@@ -31,9 +31,7 @@ const userSchema = z.object({
   }),
 });
 
-export async function POST(
-  request: Request,
-) {
+export async function POST(request: Request) {
   const body = await request.json();
   const parsedData = userSchema.safeParse(body);
 
@@ -49,15 +47,14 @@ export async function POST(
   const { name, documentNumber, role, email, password } = parsedData.data;
 
   try {
-    console.log({name, documentNumber, role, email, password});
     await auth.api.signUpEmail({
       body: {
         email,
         password,
         name,
         documentNumber,
-        role
-      }
+        role,
+      },
     });
     return new Response("User created successfully", { status: 201 });
   } catch (error) {

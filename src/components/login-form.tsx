@@ -48,11 +48,6 @@ export default function LoginForm() {
         return;
       }
       setErrorMessage("Erro ao fazer login");
-      // }
-      // console.log(error.message);
-      // setErrorMessage(
-      //   error instanceof Error ? error.message : "An unexpected error occurred"
-      // );
     }
   };
   return (

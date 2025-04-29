@@ -12,10 +12,8 @@ export async function GET(
     }>;
   }
 ) {
-
-  const searchParams = request.nextUrl.searchParams
-  const availability = searchParams.get('availability')
-  console.log(availability)
+  const searchParams = request.nextUrl.searchParams;
+  const availability = searchParams.get("availability");
   const garageId = (await params).garageId;
   if (!garageId || typeof garageId !== "string") {
     return new Response("Invalid garage ID", {
@@ -24,7 +22,10 @@ export async function GET(
   }
 
   try {
-    const vehicles = await getVehiclesForGarage(garageId, availability as Availability ?? undefined);
+    const vehicles = await getVehiclesForGarage(
+      garageId,
+      (availability as Availability) ?? undefined
+    );
     return Response.json(vehicles);
   } catch (error) {
     console.error(error);
