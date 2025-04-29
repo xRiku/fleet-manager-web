@@ -12,7 +12,7 @@ import {
 } from "./ui/form";
 import { Input } from "./ui/input";
 import { useState } from "react";
-import { Eye, EyeSlash } from "@phosphor-icons/react";
+import { Eye, EyeSlash, Warning } from "@phosphor-icons/react";
 import { Button } from "./ui/button";
 import { logIn } from "@/actions/actions";
 import { useRouter } from "next/navigation";
@@ -26,6 +26,7 @@ type RequestLoginSchema = z.infer<typeof requestLoginSchema>;
 
 export default function LoginForm() {
   const [isView, setIsView] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
   const router = useRouter();
 
   const form = useForm<RequestLoginSchema>({
@@ -37,8 +38,22 @@ export default function LoginForm() {
   });
 
   const onSubmit = async (data: RequestLoginSchema) => {
-    await logIn(data);
-    router.refresh();
+    try {
+      await logIn(data);
+      router.refresh();
+    } catch (error) {
+      // if (error.message) {
+      if (error.message === "Invalid email or password") {
+        setErrorMessage("Email ou senha inválidos");
+        return;
+      }
+      setErrorMessage("Erro ao fazer login");
+      // }
+      // console.log(error.message);
+      // setErrorMessage(
+      //   error instanceof Error ? error.message : "An unexpected error occurred"
+      // );
+    }
   };
   return (
     <Form {...form}>
@@ -92,9 +107,16 @@ export default function LoginForm() {
             </FormItem>
           )}
         />
-        <Button type="submit" className="my-3">
-          Entrar
-        </Button>
+        <div className="flex flex-col">
+          <Button type="submit" className="my-3">
+            Entrar
+          </Button>
+          {errorMessage && (
+            <p className="flex items-center gap-2 text-sm font-medium text-red-500 dark:text-red-400">
+              <Warning /> {errorMessage}
+            </p>
+          )}
+        </div>
       </form>
     </Form>
   );

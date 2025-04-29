@@ -238,10 +238,9 @@ export async function logIn(data: AuthSchema) {
         email: data.email,
         password: data.password,
       },
-      asResponse: true,
     });
   } catch (error) {
-    throw error;
+    throw new Error(error.message);
   }
 }
 
