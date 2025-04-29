@@ -16,6 +16,7 @@ import { Eye, EyeSlash, Warning } from "@phosphor-icons/react";
 import { Button } from "./ui/button";
 import { logIn } from "@/actions/actions";
 import { useRouter } from "next/navigation";
+import { Spinner } from "./ui/spinner";
 
 const requestLoginSchema = z.object({
   email: z.string().email({ message: "Email inválido" }),
@@ -42,8 +43,10 @@ export default function LoginForm() {
       await logIn(data);
       router.refresh();
     } catch (error) {
-      // if (error.message) {
-      if (error.message === "Invalid email or password") {
+      if (
+        error instanceof Error &&
+        error.message === "Invalid email or password"
+      ) {
         setErrorMessage("Email ou senha inválidos");
         return;
       }
@@ -103,7 +106,10 @@ export default function LoginForm() {
           )}
         />
         <div className="flex flex-col">
-          <Button type="submit" className="my-3">
+          <Button type="submit" className="flex gap-2 items-center my-3">
+            {form.formState.isSubmitting && (
+              <Spinner className="bg-primary-foreground" />
+            )}
             Entrar
           </Button>
           {errorMessage && (
