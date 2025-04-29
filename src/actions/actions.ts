@@ -87,6 +87,20 @@ export async function createVehicleRequest(data: RequestVehicleSchema) {
   }
   const driverId = session.user.id;
 
+  const activeRequestAlreadyExists = await db
+    .select()
+    .from(trips)
+    .where(
+      and(
+        eq(trips.driverId, driverId),
+        eq(trips.progress, Progress.IN_PROGRESS)
+      )
+    );
+
+  if (activeRequestAlreadyExists.length > 0) {
+    throw Error("Active request already exists");
+  }
+
   await db.insert(trips).values({
     id: uuidv4(),
     ...data,
@@ -134,6 +148,7 @@ export async function approveRequest(tripId: string) {
       })
       .where(eq(vehicles.id, trip.vehicleId));
 
+    // rejects requests for that vehicle
     await tsx
       .update(trips)
       .set({
@@ -144,6 +159,21 @@ export async function approveRequest(tripId: string) {
       .where(
         and(
           eq(trips.vehicleId, trip.vehicleId),
+          eq(trips.status, Status.IN_ANALYSIS)
+        )
+      );
+
+    // rejects the remaining requests for that driver
+    await tsx
+      .update(trips)
+      .set({
+        reviewedAt: new Date(),
+        reviewedBy: userId,
+        status: Status.REJECTED,
+      })
+      .where(
+        and(
+          eq(trips.driverId, trip.driverId),
           eq(trips.status, Status.IN_ANALYSIS)
         )
       );

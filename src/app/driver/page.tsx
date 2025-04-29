@@ -11,13 +11,16 @@ import { Car, FlagBannerFold, MapPin } from "@phosphor-icons/react/dist/ssr";
 import { format } from "date-fns";
 
 export default async function Page() {
-  const requests = await getVehicleRequestsForDriver();
-  const currentTrip = await getCurrentTripForDriver();
+  const requestsPromise = getVehicleRequestsForDriver();
+  const currentTripPromise = getCurrentTripForDriver();
+  const [requests, currentTrip] = await Promise.all([
+    requestsPromise,
+    currentTripPromise,
+  ]);
 
   if (!requests.length) {
     return <VehicleRequestsEmptyState />;
   }
-  
 
   return (
     <Tabs
@@ -32,7 +35,9 @@ export default async function Page() {
         {currentTrip ? (
           <div className="flex flex-col gap-8 h-full">
             <div className="w-full rounded-md bg-muted flex flex-col p-4">
-              <span className="font-semibold mb-2">{format(new Date(currentTrip?.createdAt), "dd/MM/yyyy")}</span>
+              <span className="font-semibold mb-2">
+                {format(new Date(currentTrip?.createdAt), "dd/MM/yyyy")}
+              </span>
               <div className="flex flex-col">
                 <span className="inline-flex items-center gap-2">
                   <Car weight="duotone" />
@@ -58,9 +63,11 @@ export default async function Page() {
       <TabsContent value="requests">
         <div className="flex flex-col gap-4 h-full">
           <DriverRequestsTable trips={requests} />
-          <div className="mt-auto">
-            <TripsModalTriggerButton />
-          </div>
+          {!currentTrip && (
+            <div className="mt-auto">
+              <TripsModalTriggerButton />
+            </div>
+          )}
         </div>
       </TabsContent>
     </Tabs>
