@@ -5,17 +5,18 @@ import {
   timestamp,
   pgTable,
   boolean,
+  uuid,
 } from "drizzle-orm/pg-core";
 import { GenericAnswer, Status } from "@/types";
 
 export const garages = pgTable("garages", {
-  id: text("id").primaryKey(),
+  id: uuid().primaryKey().defaultRandom(),
   name: text("name").notNull(),
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
 
 export const vehicles = pgTable("vehicles", {
-  id: text("id").primaryKey(),
+  id: uuid().primaryKey().defaultRandom(),
 
   plate: text("plate").notNull().unique(),
   color: text("color").notNull(),
@@ -31,7 +32,7 @@ export const vehicles = pgTable("vehicles", {
 });
 
 export const trips = pgTable("trips", {
-  id: text("id").primaryKey(),
+  id: uuid().primaryKey().defaultRandom(),
   status: text("status").notNull().default(Status.IN_ANALYSIS),
   progress: text("progress"),
 
@@ -62,7 +63,7 @@ export const trips = pgTable("trips", {
 });
 
 export const users = pgTable("users", {
-  id: text("id").primaryKey(),
+  id: uuid().primaryKey().defaultRandom(),
 
   name: text("name").notNull(),
   documentNumber: text("document_number").notNull().unique(),
@@ -113,7 +114,7 @@ export const vehiclesRelations = relations(vehicles, ({ one, many }) => ({
 }));
 
 export const sessions = pgTable("sessions", {
-  id: text("id").primaryKey(),
+  id: uuid().primaryKey().defaultRandom(),
   expiresAt: timestamp("expires_at").notNull(),
   token: text("token").notNull().unique(),
   createdAt: timestamp("created_at").notNull(),
@@ -126,7 +127,7 @@ export const sessions = pgTable("sessions", {
 });
 
 export const accounts = pgTable("accounts", {
-  id: text("id").primaryKey(),
+  id: uuid().primaryKey().defaultRandom(),
   accountId: text("account_id").notNull(),
   providerId: text("provider_id").notNull(),
   userId: text("user_id")
@@ -144,7 +145,7 @@ export const accounts = pgTable("accounts", {
 });
 
 export const verifications = pgTable("verifications", {
-  id: text("id").primaryKey(),
+  id: uuid().primaryKey().defaultRandom(),
   identifier: text("identifier").notNull(),
   value: text("value").notNull(),
   expiresAt: timestamp("expires_at").notNull(),
