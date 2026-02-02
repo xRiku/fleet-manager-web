@@ -3,7 +3,7 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: "Fleet Manager",
-  description: "BrasMaquinas Fleet Manager",
+  description: "Modern fleet management for the digital age",
 };
 
 export default function RootLayout({

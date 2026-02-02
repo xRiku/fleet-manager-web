@@ -1,34 +1,265 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🚗 Fleet Manager
 
-## Getting Started
+<p align="center">
+  <img src="https://raw.githubusercontent.com/user-attachments/fleet-manager-banner.png" alt="Fleet Manager" width="800">
+</p>
 
-First, run the development server:
+<p align="center">
+  <strong>Modern fleet management for the digital age</strong>
+</p>
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+<p align="center">
+  <a href="#features">Features</a> •
+  <a href="#tech-stack">Tech Stack</a> •
+  <a href="#getting-started">Getting Started</a> •
+  <a href="#architecture">Architecture</a>
+</p>
+
+<p align="center">
+  <img src="https://img.shields.io/badge/Next.js-15-black?style=flat-square&logo=next.js" alt="Next.js">
+  <img src="https://img.shields.io/badge/React-19-61DAFB?style=flat-square&logo=react" alt="React">
+  <img src="https://img.shields.io/badge/TypeScript-5-3178C6?style=flat-square&logo=typescript" alt="TypeScript">
+  <img src="https://img.shields.io/badge/Tailwind-4-06B6D4?style=flat-square&logo=tailwindcss" alt="Tailwind">
+  <img src="https://img.shields.io/badge/PostgreSQL-4169E1?style=flat-square&logo=postgresql" alt="PostgreSQL">
+</p>
+
+---
+
+## ✨ Features
+
+<table>
+<tr>
+<td width="50%">
+
+### 🚙 Vehicle Management
+- Track vehicle details, maintenance history, and availability
+- Real-time odometer readings and status updates
+- Garage assignment and location tracking
+
+</td>
+<td width="50%">
+
+### 🛣️ Trip Management
+- Request and approve vehicle trips
+- Track trip progress from start to finish
+- Review and audit trip completion
+
+</td>
+</tr>
+<tr>
+<td width="50%">
+
+### 🏢 Garage Management
+- Organize vehicles by garage location
+- Manage multiple storage facilities
+- Quick overview of vehicle distribution
+
+</td>
+<td width="50%">
+
+### 👥 User Management
+- Role-based access control (Admin/Driver)
+- Secure authentication with Better Auth
+- Driver profiles and trip history
+
+</td>
+</tr>
+</table>
+
+---
+
+## 📸 Screenshots
+
+<p align="center">
+  <em>Dashboard Overview</em>
+</p>
+<p align="center">
+  <img src="./screenshots/dashboard.png" alt="Dashboard" width="80%">
+</p>
+
+<p align="center">
+  <em>Vehicle Management Interface</em>
+</p>
+<p align="center">
+  <img src="./screenshots/vehicles.png" alt="Vehicles" width="80%">
+</p>
+
+<p align="center">
+  <em>Trip Request Flow</em>
+</p>
+<p align="center">
+  <img src="./screenshots/trips.png" alt="Trips" width="80%">
+</p>
+
+---
+
+## 🛠 Tech Stack
+
+| Category | Technology |
+|----------|------------|
+| **Framework** | Next.js 15 (App Router) |
+| **Language** | TypeScript 5 |
+| **Styling** | Tailwind CSS 4 |
+| **UI Components** | shadcn/ui |
+| **Database** | PostgreSQL |
+| **ORM** | Drizzle ORM |
+| **Auth** | Better Auth |
+| **State** | Zustand |
+| **Forms** | React Hook Form + Zod |
+| **Icons** | Lucide React |
+
+---
+
+## 🚀 Getting Started
+
+### Prerequisites
+
+- Node.js 20+
+- PostgreSQL database
+- npm or yarn
+
+### Installation
+
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/yourusername/fleet-manager.git
+   cd fleet-manager
+   ```
+
+2. **Install dependencies**
+   ```bash
+   npm install
+   ```
+
+3. **Set up environment variables**
+   ```bash
+   cp .env.example .env
+   ```
+   
+   Edit `.env` with your database credentials:
+   ```env
+   DATABASE_URL=postgresql://user:password@localhost:5432/fleet_manager
+   BETTER_AUTH_SECRET=your-secret-key
+   ```
+
+4. **Run database migrations**
+   ```bash
+   npm run db:push
+   ```
+
+5. **Start the development server**
+   ```bash
+   npm run dev
+   ```
+
+6. **Open in browser**
+   Navigate to [http://localhost:3000](http://localhost:3000)
+
+---
+
+## 🏗 Architecture
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                        Next.js App                          │
+│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐      │
+│  │   (manager)  │  │    (auth)    │  │   (driver)   │      │
+│  │  Admin Pages │  │  Login/Auth  │  │ Driver Pages │      │
+│  └──────────────┘  └──────────────┘  └──────────────┘      │
+└────────────────────────┬────────────────────────────────────┘
+                         │
+         ┌───────────────┼───────────────┐
+         │               │               │
+   ┌─────▼─────┐   ┌─────▼─────┐   ┌─────▼─────┐
+   │  Server   │   │  Better   │   │  Drizzle  │
+   │  Actions  │   │   Auth    │   │    ORM    │
+   └─────┬─────┘   └─────┬─────┘   └─────┬─────┘
+         │               │               │
+         └───────────────┼───────────────┘
+                         │
+                  ┌──────▼──────┐
+                  │  PostgreSQL │
+                  │  Database   │
+                  └─────────────┘
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Project Structure
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```
+src/
+├── actions/          # Server actions for mutations
+├── app/              # Next.js app router
+│   ├── (auth)/       # Auth group (login)
+│   ├── (manager)/    # Manager group (dashboard, vehicles, etc.)
+│   ├── api/          # API routes
+│   └── driver/       # Driver-specific pages
+├── components/       # React components
+│   ├── ui/           # shadcn/ui components
+│   ├── buttons/      # Button components
+│   ├── cards/        # Card components
+│   ├── dialogs/      # Dialog components
+│   └── tables/       # Table components
+├── db/               # Database schema and config
+├── hooks/            # Custom React hooks
+├── lib/              # Utilities and auth config
+├── stores/           # Zustand state stores
+└── types.ts          # Shared TypeScript types
+```
 
-## Learn More
+---
 
-To learn more about Next.js, take a look at the following resources:
+## 📚 Available Scripts
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+| Command | Description |
+|---------|-------------|
+| `npm run dev` | Start development server with Turbopack |
+| `npm run build` | Build for production |
+| `npm run start` | Start production server |
+| `npm run lint` | Run ESLint |
+| `npm run db:push` | Push schema changes to database |
+| `npm run db:studio` | Open Drizzle Studio |
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+---
 
-## Deploy on Vercel
+## 🔐 Authentication
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Fleet Manager uses Better Auth for secure authentication:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- **Session-based auth** with HTTP-only cookies
+- **Role-based access control** (Admin, User, Driver)
+- **Secure password hashing** with bcrypt
+- **Middleware protection** for protected routes
+
+---
+
+## 🎨 Design System
+
+Built with a cohesive design system using:
+
+- **Primary Color**: Teal (#14b8a6) - Represents movement and efficiency
+- **Neutral Palette**: Slate grays for professional appearance
+- **Typography**: System fonts optimized for readability
+- **Components**: shadcn/ui with custom theming
+- **Icons**: Lucide React + Phosphor icons
+
+---
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+---
+
+## 📄 License
+
+This project is licensed under the MIT License.
+
+---
+
+<p align="center">
+  Made with 💙 for fleet management
+</p>
