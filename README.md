@@ -1,10 +1,6 @@
 # 🚗 Fleet Manager
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/user-attachments/fleet-manager-banner.png" alt="Fleet Manager" width="800">
-</p>
-
-<p align="center">
   <strong>Modern fleet management for the digital age</strong>
 </p>
 
@@ -65,31 +61,6 @@
 </td>
 </tr>
 </table>
-
----
-
-## 📸 Screenshots
-
-<p align="center">
-  <em>Dashboard Overview</em>
-</p>
-<p align="center">
-  <img src="./screenshots/dashboard.png" alt="Dashboard" width="80%">
-</p>
-
-<p align="center">
-  <em>Vehicle Management Interface</em>
-</p>
-<p align="center">
-  <img src="./screenshots/vehicles.png" alt="Vehicles" width="80%">
-</p>
-
-<p align="center">
-  <em>Trip Request Flow</em>
-</p>
-<p align="center">
-  <img src="./screenshots/trips.png" alt="Trips" width="80%">
-</p>
 
 ---
 
